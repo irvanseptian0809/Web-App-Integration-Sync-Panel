@@ -11,14 +11,15 @@ import { TypographyH3, TypographyMuted, TypographyP } from '@/components/atoms/T
 import { DataRow } from '@/components/molecules/DataRow';
 import { StatusIndicator } from '@/components/molecules/StatusIndicator';
 import { RemoveConfirmModal } from '@/components/organisms/RemoveConfirmModal';
-import { SyncPreviewPanel } from '@/components/organisms/SyncPreviewPanel';
+import { ReviewChangesModal } from '@/components/organisms/ReviewChangesModal';
 import { SyncDetailTemplate } from '@/components/templates/SyncDetailTemplate';
 import { mockSyncHistory, mockLocalData } from '@/modules/integrations/mockData';
 import { SyncChange, SyncEvent } from '@/modules/integrations/types';
 import { syncApi } from '@/modules/sync/services/syncApi';
 import { useSyncStore } from '@/modules/sync/store';
 import { useNotificationStore } from '@/stores/notificationStore';
-import { Database, Clock, CalendarSync, History } from 'lucide-react';
+import { AlertCircle, Database, Clock, CalendarSync, History } from 'lucide-react';
+
 
 
 
@@ -44,9 +45,9 @@ export default function IntegrationDetailPage() {
   
   const showNotification = useNotificationStore((state) => state.showNotification);
 
-  const [showValidation, setShowValidation] = useState(false);
   const [isSuccessMode, setIsSuccessMode] = useState(false);
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
 
   const { mutate: handleSync, isPending, error } = useMutation({
     mutationFn: () => syncApi.fetchSyncData(integration?.provider || ''),
@@ -61,6 +62,7 @@ export default function IntegrationDetailPage() {
         setPendingChanges(integrationId, response.data.sync_approval.changes);
         setIntegrationStatus(integrationId, 'conflict');
         setIsSuccessMode(false);
+        setIsReviewOpen(true);
       } else {
         setIntegrationStatus(integrationId, 'synced');
       }
@@ -77,23 +79,6 @@ export default function IntegrationDetailPage() {
       });
     }
   });
-
-  const handleConfirmMerge = () => {
-    if (!allResolved) {
-      setShowValidation(true);
-      return;
-    }
-    // In a real app this would call an API like POST /api/v1/data/sync/confirm
-    // For this test, we just simulate a successful merge process 
-    clearResolutions(integrationId);
-    bumpIntegrationVersion(integrationId);
-    setIntegrationStatus(integrationId, 'synced');
-    setIsSuccessMode(true);
-    
-    // reset success mode after 3 seconds
-    setTimeout(() => setIsSuccessMode(false), 3000);
-  };
-
   if (!integration) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-slate-500">
@@ -103,7 +88,6 @@ export default function IntegrationDetailPage() {
   }
 
   const hasPendingChanges = pendingChanges.length > 0;
-  const allResolved = hasPendingChanges && pendingChanges.every(c => resolutions[c.field_name] !== undefined);
 
   const headerAction = (
     <div className="flex items-center gap-3">
@@ -116,18 +100,28 @@ export default function IntegrationDetailPage() {
         Remove
       </Button>
       
-      <Button 
-        onClick={() => handleSync()} 
-        disabled={isPending || hasPendingChanges}
-        className="shrink-0 bg-slate-900 border-slate-900 hover:bg-slate-800"
-      >
-        {isPending ? (
-          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-        ) : (
-          <RefreshCw className="w-4 h-4 mr-2" />
-        )}
-        Sync Now
-      </Button>
+      {hasPendingChanges ? (
+        <Button 
+          onClick={() => setIsReviewOpen(true)} 
+          className="shrink-0 bg-amber-500 hover:bg-amber-600 border-amber-500 text-white"
+        >
+          <AlertCircle className="w-4 h-4 mr-2" />
+          Resolve Conflict
+        </Button>
+      ) : (
+        <Button 
+          onClick={() => handleSync()} 
+          disabled={isPending || hasPendingChanges}
+          className="shrink-0 bg-slate-900 border-slate-900 hover:bg-slate-800"
+        >
+          {isPending ? (
+            <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+          ) : (
+            <RefreshCw className="w-4 h-4 mr-2" />
+          )}
+          Sync Now
+        </Button>
+      )}
     </div>
   );
 
@@ -206,28 +200,17 @@ export default function IntegrationDetailPage() {
              )}
 
             {hasPendingChanges ? (
-              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                 <SyncPreviewPanel
-                   changes={pendingChanges}
-                   resolutions={resolutions}
-                   onResolveConflict={(change, choice) => {
-                     setResolution(integrationId, change.field_name, choice);
-                     if (showValidation) setShowValidation(false);
-                   }}
-                   showValidationErrors={showValidation}
-                 />
-                 
-                 <div className="mt-4 flex items-center justify-end">
-                   <Button 
-                     size="lg" 
-                     onClick={handleConfirmMerge}
-                     disabled={!hasPendingChanges}
-                     variant={allResolved ? 'default' : 'outline'}
-                     className={allResolved ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}
-                   >
-                     {allResolved ? 'Confirm & Apply Merge' : 'Resolve all conflicts to Apply'}
-                   </Button>
-                 </div>
+              <div className="text-center py-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                 <TypographyMuted className="mb-4 text-amber-600 font-medium flex items-center justify-center gap-2">
+                   This integration has conflicts requiring your review.
+                 </TypographyMuted>
+                 <Button 
+                   size="lg" 
+                   onClick={() => setIsReviewOpen(true)}
+                   className="bg-amber-500 hover:bg-amber-600 text-white border-amber-500"
+                 >
+                   Review & Resolve Conflicts
+                 </Button>
               </div>
              ) : (
                 <div className="text-center py-6">
@@ -281,6 +264,14 @@ export default function IntegrationDetailPage() {
           isOpen={isRemoveModalOpen}
           onClose={() => setIsRemoveModalOpen(false)}
           onSuccess={() => router.push('/')}
+        />
+      )}
+      
+      {integration && (
+        <ReviewChangesModal 
+          integration={integration}
+          isOpen={isReviewOpen}
+          onClose={() => setIsReviewOpen(false)}
         />
       )}
     </SyncDetailTemplate>

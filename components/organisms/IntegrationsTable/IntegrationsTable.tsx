@@ -26,23 +26,24 @@ export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
   const [removeModalOpenFor, setRemoveModalOpenFor] = useState<Integration | null>(null);
 
   const { mutate: handleSync, isPending: isSyncingProvider, variables: currentSyncing } = useMutation({
-    mutationFn: async ({ id, provider }: { id: string; provider: string }) => {
-      const resp = await syncApi.fetchSyncData(provider);
-      return { id, changes: resp?.data?.sync_approval?.changes || [] };
+    mutationFn: async ({ integration }: { integration: Integration }) => {
+      const resp = await syncApi.fetchSyncData(integration.provider);
+      return { integration, changes: resp?.data?.sync_approval?.changes || [] };
     },
-    onMutate: ({ id }) => {
-      setIntegrationStatus(id, 'syncing');
+    onMutate: ({ integration }) => {
+      setIntegrationStatus(integration.id, 'syncing');
     },
-    onSuccess: ({ id, changes }) => {
+    onSuccess: ({ integration, changes }) => {
       if (changes.length > 0) {
-        setPendingChanges(id, changes);
-        setIntegrationStatus(id, 'conflict');
+        setPendingChanges(integration.id, changes);
+        setIntegrationStatus(integration.id, 'conflict');
+        setReviewModalOpenFor(integration);
       } else {
-        setIntegrationStatus(id, 'synced');
+        setIntegrationStatus(integration.id, 'synced');
       }
     },
-    onError: (err: any, { id }) => {
-      setIntegrationStatus(id, 'error');
+    onError: (err: any, { integration }) => {
+      setIntegrationStatus(integration.id, 'error');
       showNotification({
         type: 'error',
         title: 'Sync Request Failed',
@@ -102,10 +103,10 @@ export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        onClick={() => handleSync({ id: integration.id, provider: integration.provider })}
+                        onClick={() => handleSync({ integration })}
                         disabled={isSyncingProvider}
                       >
-                        {(isSyncingProvider && currentSyncing?.id === integration.id) ? (
+                        {(isSyncingProvider && currentSyncing?.integration.id === integration.id) ? (
                            <><RefreshCw className="w-4 h-4 mr-2 animate-spin" /> Syncing...</>
                         ) : (
                            <><RefreshCw className="w-4 h-4 mr-2" /> Sync</>
