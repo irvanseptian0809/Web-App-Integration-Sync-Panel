@@ -10,6 +10,7 @@ import { ModalWrapper } from '@/components/molecules/ModalWrapper';
 import { Integration } from '@/modules/integrations/types';
 import { syncApi } from '@/modules/sync/services/syncApi';
 import { useSyncStore } from '@/modules/sync/store';
+import { useNotificationStore } from '@/stores/notificationStore';
 import { AddIntegrationModalProps } from "./interfaces";
 
 const SUPPORTED_PROVIDERS = ['salesforce', 'hubspot', 'stripe', 'slack', 'zendesk', 'intercom'];
@@ -20,6 +21,7 @@ export function AddIntegrationModal({ isOpen, onClose }: AddIntegrationModalProp
   
   const addIntegration = useSyncStore((state) => state.addIntegration);
   const integrations = useSyncStore((state) => state.integrations);
+  const showNotification = useNotificationStore((state) => state.showNotification);
 
   const { mutate: handleAdd, isPending } = useMutation({
     mutationFn: async () => {
@@ -50,7 +52,13 @@ export function AddIntegrationModal({ isOpen, onClose }: AddIntegrationModalProp
       onClose();
     },
     onError: (err: any) => {
-      setErrorLocal(err.message || 'Failed to connect integration. Please try again.');
+      setErrorLocal(err.message || 'Failed to connect integration.');
+      showNotification({
+        type: 'error',
+        title: 'Connection Failed',
+        message: err.message || 'Could not establish a connection to the integration provider.',
+        code: err.code || 'ERR_CONNECTION_REFUSED'
+      });
     }
   });
 

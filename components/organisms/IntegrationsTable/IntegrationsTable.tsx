@@ -12,12 +12,14 @@ import { ReviewChangesModal } from '@/components/organisms/ReviewChangesModal';
 import { Integration } from '@/modules/integrations/types';
 import { syncApi } from '@/modules/sync/services/syncApi';
 import { useSyncStore } from '@/modules/sync/store';
+import { useNotificationStore } from '@/stores/notificationStore';
 import { AlertCircle, RefreshCw, Trash2 } from 'lucide-react';
 import { IntegrationsTableProps } from "./interfaces";
 
 export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
   const pendingChangesMap = useSyncStore((state) => state.pendingChanges);
   const setPendingChanges = useSyncStore((state) => state.setPendingChanges);
+  const showNotification = useNotificationStore((state) => state.showNotification);
   
   const [reviewModalOpenFor, setReviewModalOpenFor] = useState<Integration | null>(null);
   const [removeModalOpenFor, setRemoveModalOpenFor] = useState<Integration | null>(null);
@@ -31,6 +33,14 @@ export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
       if (changes.length > 0) {
         setPendingChanges(id, changes);
       }
+    },
+    onError: (err: any) => {
+      showNotification({
+        type: 'error',
+        title: 'Sync Request Failed',
+        message: err.message || 'Failed to fetch the latest sync data from the provider.',
+        code: err.code || 'ERR_SYNC_FAIL'
+      });
     }
   });
 
