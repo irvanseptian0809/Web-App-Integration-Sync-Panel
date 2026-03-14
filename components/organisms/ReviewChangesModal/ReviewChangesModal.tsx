@@ -13,6 +13,7 @@ export function ReviewChangesModal({ integration, isOpen, onClose }: ReviewChang
   const resolutions = useSyncStore((state) => state.resolutions[integration.id]) || {};
   const setResolution = useSyncStore((state) => state.setResolution);
   const clearResolutions = useSyncStore((state) => state.clearResolutions);
+  const bumpIntegrationVersion = useSyncStore((state) => state.bumpIntegrationVersion);
 
   const [showValidation, setShowValidation] = useState(false);
 
@@ -26,6 +27,7 @@ export function ReviewChangesModal({ integration, isOpen, onClose }: ReviewChang
     }
     // Simulate successful merge process
     clearResolutions(integration.id);
+    bumpIntegrationVersion(integration.id);
     onClose();
   };
 

@@ -17,6 +17,7 @@ import { mockSyncHistory, mockLocalData } from '@/modules/integrations/mockData'
 import { SyncChange, SyncEvent } from '@/modules/integrations/types';
 import { syncApi } from '@/modules/sync/services/syncApi';
 import { useSyncStore } from '@/modules/sync/store';
+import { useNotificationStore } from '@/stores/notificationStore';
 import { Database, Clock, CalendarSync, History } from 'lucide-react';
 
 
@@ -38,6 +39,9 @@ export default function IntegrationDetailPage() {
   const setPendingChanges = useSyncStore((state) => state.setPendingChanges);
   const setResolution = useSyncStore((state) => state.setResolution);
   const clearResolutions = useSyncStore((state) => state.clearResolutions);
+  const bumpIntegrationVersion = useSyncStore((state) => state.bumpIntegrationVersion);
+  
+  const showNotification = useNotificationStore((state) => state.showNotification);
 
   const [showValidation, setShowValidation] = useState(false);
   const [isSuccessMode, setIsSuccessMode] = useState(false);
@@ -52,6 +56,14 @@ export default function IntegrationDetailPage() {
         setIsSuccessMode(false);
       }
     },
+    onError: (err: any) => {
+      showNotification({
+        type: 'error',
+        title: 'Sync Request Failed',
+        message: err.message || 'Failed to fetch the latest sync data from the provider.',
+        code: err.code || 'ERR_SYNC_FAIL'
+      });
+    }
   });
 
   const handleConfirmMerge = () => {
@@ -62,6 +74,7 @@ export default function IntegrationDetailPage() {
     // In a real app this would call an API like POST /api/v1/data/sync/confirm
     // For this test, we just simulate a successful merge process 
     clearResolutions(integrationId);
+    bumpIntegrationVersion(integrationId);
     setIsSuccessMode(true);
     
     // reset success mode after 3 seconds
@@ -172,11 +185,6 @@ export default function IntegrationDetailPage() {
           </div>
           
           <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-             {error && (
-              <div className="p-4 mb-4 bg-red-50 text-red-700 rounded-lg text-sm border border-red-100">
-                Failed to trigger synchronization. Please check your connection or try again later.
-              </div>
-             )}
              {isSuccessMode && !hasPendingChanges && (
               <div className="p-4 mb-4 bg-emerald-50 text-emerald-700 rounded-lg flex items-center gap-2 text-sm border border-emerald-100 animate-in fade-in slide-in-from-top-2">
                 <CheckCircle2 className="w-5 h-5" />

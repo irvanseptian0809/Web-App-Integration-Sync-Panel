@@ -10,6 +10,7 @@ interface SyncState {
   integrations: Integration[];
   addIntegration: (integration: Integration) => void;
   removeIntegration: (integrationId: string) => void;
+  bumpIntegrationVersion: (integrationId: string) => void;
   
   // Conflict resolution state keyed by integrationId
   pendingChanges: Record<string, SyncChange[]>;
@@ -68,6 +69,13 @@ export const useSyncStore = create<SyncState>()(
   ],
   addIntegration: (integration) => set((state) => ({ integrations: [...state.integrations, integration] })),
   removeIntegration: (integrationId) => set((state) => ({ integrations: state.integrations.filter((i) => i.id !== integrationId) })),
+  bumpIntegrationVersion: (integrationId) => set((state) => ({
+    integrations: state.integrations.map((i) => 
+      i.id === integrationId 
+        ? { ...i, version: i.version + 1, lastSyncTime: new Date().toISOString() } 
+        : i
+    )
+  })),
   
   pendingChanges: {},
   setPendingChanges: (integrationId, changes) => set((state) => ({ 
