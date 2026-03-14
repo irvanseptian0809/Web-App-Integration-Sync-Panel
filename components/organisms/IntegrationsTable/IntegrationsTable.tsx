@@ -19,6 +19,7 @@ import { IntegrationsTableProps } from "./interfaces";
 export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
   const pendingChangesMap = useSyncStore((state) => state.pendingChanges);
   const setPendingChanges = useSyncStore((state) => state.setPendingChanges);
+  const setIntegrationStatus = useSyncStore((state) => state.setIntegrationStatus);
   const showNotification = useNotificationStore((state) => state.showNotification);
   
   const [reviewModalOpenFor, setReviewModalOpenFor] = useState<Integration | null>(null);
@@ -29,12 +30,19 @@ export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
       const resp = await syncApi.fetchSyncData(provider);
       return { id, changes: resp?.data?.sync_approval?.changes || [] };
     },
+    onMutate: ({ id }) => {
+      setIntegrationStatus(id, 'syncing');
+    },
     onSuccess: ({ id, changes }) => {
       if (changes.length > 0) {
         setPendingChanges(id, changes);
+        setIntegrationStatus(id, 'conflict');
+      } else {
+        setIntegrationStatus(id, 'synced');
       }
     },
-    onError: (err: any) => {
+    onError: (err: any, { id }) => {
+      setIntegrationStatus(id, 'error');
       showNotification({
         type: 'error',
         title: 'Sync Request Failed',

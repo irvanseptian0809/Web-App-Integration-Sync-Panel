@@ -40,6 +40,7 @@ export default function IntegrationDetailPage() {
   const setResolution = useSyncStore((state) => state.setResolution);
   const clearResolutions = useSyncStore((state) => state.clearResolutions);
   const bumpIntegrationVersion = useSyncStore((state) => state.bumpIntegrationVersion);
+  const setIntegrationStatus = useSyncStore((state) => state.setIntegrationStatus);
   
   const showNotification = useNotificationStore((state) => state.showNotification);
 
@@ -49,14 +50,25 @@ export default function IntegrationDetailPage() {
 
   const { mutate: handleSync, isPending, error } = useMutation({
     mutationFn: () => syncApi.fetchSyncData(integration?.provider || ''),
+    onMutate: () => {
+      if (integrationId) {
+        setIntegrationStatus(integrationId, 'syncing');
+      }
+    },
     onSuccess: (response) => {
       // Load changes from API into the Zustand store for preview & conflict resolution
-      if (response?.data?.sync_approval?.changes) {
+      if (response?.data?.sync_approval?.changes && response.data.sync_approval.changes.length > 0) {
         setPendingChanges(integrationId, response.data.sync_approval.changes);
+        setIntegrationStatus(integrationId, 'conflict');
         setIsSuccessMode(false);
+      } else {
+        setIntegrationStatus(integrationId, 'synced');
       }
     },
     onError: (err: any) => {
+      if (integrationId) {
+        setIntegrationStatus(integrationId, 'error');
+      }
       showNotification({
         type: 'error',
         title: 'Sync Request Failed',
@@ -75,6 +87,7 @@ export default function IntegrationDetailPage() {
     // For this test, we just simulate a successful merge process 
     clearResolutions(integrationId);
     bumpIntegrationVersion(integrationId);
+    setIntegrationStatus(integrationId, 'synced');
     setIsSuccessMode(true);
     
     // reset success mode after 3 seconds

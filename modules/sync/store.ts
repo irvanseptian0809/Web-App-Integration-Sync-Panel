@@ -11,6 +11,7 @@ interface SyncState {
   addIntegration: (integration: Integration) => void;
   removeIntegration: (integrationId: string) => void;
   bumpIntegrationVersion: (integrationId: string) => void;
+  setIntegrationStatus: (integrationId: string, status: Integration['status']) => void;
   
   // Conflict resolution state keyed by integrationId
   pendingChanges: Record<string, SyncChange[]>;
@@ -74,6 +75,11 @@ export const useSyncStore = create<SyncState>()(
       i.id === integrationId 
         ? { ...i, version: i.version + 1, lastSyncTime: new Date().toISOString() } 
         : i
+    )
+  })),
+  setIntegrationStatus: (integrationId, status) => set((state) => ({
+    integrations: state.integrations.map((i) =>
+      i.id === integrationId ? { ...i, status } : i
     )
   })),
   
