@@ -19,7 +19,10 @@ export function ReviewChangesModal({ integration, isOpen, onClose }: ReviewChang
   const [showValidation, setShowValidation] = useState(false);
 
   const hasPendingChanges = pendingChanges.length > 0;
-  const allResolved = hasPendingChanges && pendingChanges.every(c => resolutions[c.field_name] !== undefined);
+  // Resolve check: every UNIQUE field name must have a resolution
+  const uniqueFieldNames = Array.from(new Set(pendingChanges.map(c => c.field_name)));
+
+  const allResolved = hasPendingChanges && uniqueFieldNames.every(fn => resolutions[fn] !== undefined);
 
   const handleConfirmMerge = () => {
     if (!allResolved) {

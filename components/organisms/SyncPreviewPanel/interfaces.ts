@@ -2,7 +2,9 @@ import { SyncChange } from "@/modules/integrations/types";
 
 export interface SyncPreviewPanelProps {
     changes: SyncChange[];
-    onResolveConflict?: (change: SyncChange, choice: 'local' | 'remote') => void;
-    resolutions: Record<string, 'local' | 'remote'>;
+    /** Called when user picks a resolution. choice is 'local' or the SyncChange id of the chosen remote entry */
+    onResolveConflict?: (change: SyncChange, choice: 'local' | string) => void;
+    /** Maps field_name -> 'local' | changeId */
+    resolutions: Record<string, 'local' | string>;
     showValidationErrors?: boolean;
 }

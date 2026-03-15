@@ -17,9 +17,9 @@ interface SyncState {
   pendingChanges: Record<string, SyncChange[]>;
   setPendingChanges: (integrationId: string, changes: SyncChange[]) => void;
   
-  // Record of resolved fields (key: integrationId -> field_name -> 'local' | 'remote')
-  resolutions: Record<string, Record<string, 'local' | 'remote'>>;
-  setResolution: (integrationId: string, fieldName: string, choice: 'local' | 'remote') => void;
+  // Record of resolved fields (key: integrationId -> field_name -> 'local' | changeId)
+  resolutions: Record<string, Record<string, 'local' | string>>;
+  setResolution: (integrationId: string, fieldName: string, choice: 'local' | string) => void;
   
   clearResolutions: (integrationId: string) => void;
 }
