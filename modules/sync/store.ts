@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { SyncChange, Integration } from '@/modules/integrations/types';
+import { SyncChange, Integration, ResolutionHistoryEntry } from '@/modules/integrations/types';
 
 interface SyncState {
   activeIntegration: Integration | null;
@@ -22,6 +22,10 @@ interface SyncState {
   setResolution: (integrationId: string, fieldName: string, choice: 'local' | string) => void;
   
   clearResolutions: (integrationId: string) => void;
+  
+  // Conflict resolution history keyed by integrationId
+  conflictHistory: Record<string, ResolutionHistoryEntry[]>;
+  recordResolution: (entry: ResolutionHistoryEntry) => void;
 }
 
 export const useSyncStore = create<SyncState>()(
@@ -113,6 +117,17 @@ export const useSyncStore = create<SyncState>()(
       pendingChanges: newPendingChanges
     };
   }),
+
+  conflictHistory: {},
+  recordResolution: (entry) => set((state) => ({
+    conflictHistory: {
+      ...state.conflictHistory,
+      [entry.integrationId]: [
+        entry,
+        ...(state.conflictHistory[entry.integrationId] || [])
+      ]
+    }
+  })),
 }),
   {
     name: 'portier-sync-storage', // unique name for localStorage key

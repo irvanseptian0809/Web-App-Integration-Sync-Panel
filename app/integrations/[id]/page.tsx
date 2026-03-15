@@ -11,6 +11,7 @@ import { TypographyH3, TypographyMuted, TypographyP } from '@/components/atoms/T
 import { DataRow } from '@/components/molecules/DataRow';
 import { StatusIndicator } from '@/components/molecules/StatusIndicator';
 import { RemoveConfirmModal } from '@/components/organisms/RemoveConfirmModal';
+import { ResolutionHistoryTable } from '@/components/organisms/ResolutionHistoryTable';
 import { ReviewChangesModal } from '@/components/organisms/ReviewChangesModal';
 import { SyncDetailTemplate } from '@/components/templates/SyncDetailTemplate';
 import { mockSyncHistory, mockLocalData } from '@/modules/integrations/mockData';
@@ -36,6 +37,7 @@ export default function IntegrationDetailPage() {
 
   const pendingChanges = useSyncStore((state) => state.pendingChanges[integrationId]) || [];
   const resolutions = useSyncStore((state) => state.resolutions[integrationId]) || {};
+  const conflictHistory = useSyncStore((state) => state.conflictHistory[integrationId]) || [];
   
   const setPendingChanges = useSyncStore((state) => state.setPendingChanges);
   const setResolution = useSyncStore((state) => state.setResolution);
@@ -256,6 +258,11 @@ export default function IntegrationDetailPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Resolution History Table */}
+      <div className="mt-8">
+        <ResolutionHistoryTable entries={conflictHistory} pageSize={5} />
       </div>
       
       {integration && (
