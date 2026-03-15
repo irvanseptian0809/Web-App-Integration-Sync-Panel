@@ -8,13 +8,17 @@ import { SyncPreviewPanel } from '@/components/organisms/SyncPreviewPanel';
 import { useSyncStore } from '@/modules/sync/store';
 import { ReviewChangesModalProps } from "./interfaces";
 
+
 export function ReviewChangesModal({ integration, isOpen, onClose }: ReviewChangesModalProps) {
   const pendingChanges = useSyncStore((state) => state.pendingChanges[integration.id]) || [];
   const resolutions = useSyncStore((state) => state.resolutions[integration.id]) || {};
+  const integrations = useSyncStore((state) => state.integrations);
+  const currentIntegration = integrations.find((i) => i.id === integration.id);
   const setResolution = useSyncStore((state) => state.setResolution);
   const clearResolutions = useSyncStore((state) => state.clearResolutions);
   const bumpIntegrationVersion = useSyncStore((state) => state.bumpIntegrationVersion);
   const setIntegrationStatus = useSyncStore((state) => state.setIntegrationStatus);
+  const recordResolution = useSyncStore((state) => state.recordResolution);
 
   const [showValidation, setShowValidation] = useState(false);
 
@@ -29,6 +33,38 @@ export function ReviewChangesModal({ integration, isOpen, onClose }: ReviewChang
       setShowValidation(true);
       return;
     }
+
+    const previousVersion = currentIntegration?.version ?? integration.version;
+    const nextVersion = previousVersion + 1;
+
+    // Build per-field history records — only for accepted incoming
+    const fields = uniqueFieldNames
+      .map((fieldName) => {
+        const choice = resolutions[fieldName]; // 'local' | changeId
+        const matchingChange = pendingChanges.find((c) => c.field_name === fieldName && c.id === choice);
+        const localChange = pendingChanges.find((c) => c.field_name === fieldName);
+
+        return {
+          fieldName,
+          previousValue: localChange?.current_value ?? null,
+          resolvedValue: matchingChange?.new_value ?? null,
+          choice,
+        };
+      })
+      .filter((f) => f.choice !== 'local'); // skip kept-local fields
+
+    // Only record if at least 1 incoming change was accepted
+    if (fields.length > 0) {
+      recordResolution({
+        id: `res_${Date.now()}`,
+        integrationId: integration.id,
+        resolvedAt: new Date().toISOString(),
+        previousVersion,
+        resolvedVersion: nextVersion,
+        fields,
+      });
+    }
+
     // Simulate successful merge process
     clearResolutions(integration.id);
     bumpIntegrationVersion(integration.id);

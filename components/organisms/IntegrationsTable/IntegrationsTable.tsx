@@ -3,7 +3,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
 import { Button } from '@/components/atoms/Button';
 import { StatusIndicator } from '@/components/molecules/StatusIndicator';
@@ -27,6 +27,9 @@ export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
 
   // ── Checkbox selection state ──────────────────────────────────────────────
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  // Tracks how many integrations are running in the current bulk sync batch
+  const bulkSyncCountRef = useRef<number>(0);
 
   const syncableIntegrations = integrations.filter(
     (i) => (i.status === 'synced' || i.status === 'error') && !pendingChangesMap[i.id]?.length
@@ -66,7 +69,10 @@ export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
       if (changes.length > 0) {
         setPendingChanges(integration.id, changes);
         setIntegrationStatus(integration.id, 'conflict');
-        setReviewModalOpenFor(integration);
+        // Only auto-open modal for single syncs, not bulk
+        if (bulkSyncCountRef.current <= 1) {
+          setReviewModalOpenFor(integration);
+        }
       } else {
         setIntegrationStatus(integration.id, 'synced');
       }
@@ -92,6 +98,8 @@ export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
   const handleBulkSync = useCallback(() => {
     const toSync = integrations.filter((i) => selectedIds.has(i.id));
     if (toSync.length === 0) return;
+    // Record how many we're syncing so onSuccess knows if it's a bulk op
+    bulkSyncCountRef.current = toSync.length;
     // Clear selection immediately
     setSelectedIds(new Set());
     // Fire them all — useMutation will queue/batch them
@@ -294,7 +302,11 @@ export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
         <RemoveConfirmModal 
           integration={removeModalOpenFor} 
           isOpen={!!removeModalOpenFor} 
-          onClose={() => setRemoveModalOpenFor(null)} 
+          onClose={() => {
+            // Clear the deleted integration from selection on close
+            setSelectedIds((prev) => { const n = new Set(prev); n.delete(removeModalOpenFor.id); return n; });
+            setRemoveModalOpenFor(null);
+          }}
         />
       )}
     </div>

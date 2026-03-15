@@ -40,3 +40,17 @@ export interface SyncResponse {
     metadata: any;
   };
 }
+
+export interface ResolutionHistoryEntry {
+  id: string;
+  integrationId: string;
+  resolvedAt: string;
+  previousVersion: number;
+  resolvedVersion: number;
+  fields: Array<{
+    fieldName: string;
+    previousValue: string | null;
+    resolvedValue: string | null;
+    choice: 'local' | string;
+  }>;
+}
