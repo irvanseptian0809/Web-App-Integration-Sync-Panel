@@ -1,5 +1,5 @@
-import { SyncStatus } from "@/modules/integrations/types";
+import { SyncStatus } from "@/interface/types"
 
 export interface StatusIndicatorProps {
-    status: SyncStatus;
+  status: SyncStatus
 }

@@ -1,2 +1,2 @@
-export * from './interfaces';
-export * from './ModalWrapper';
+export * from "./interfaces"
+export * from "./ModalWrapper"

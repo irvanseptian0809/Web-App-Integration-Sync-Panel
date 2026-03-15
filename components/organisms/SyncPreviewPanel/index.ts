@@ -1,2 +1,2 @@
-export * from './interfaces';
-export * from './SyncPreviewPanel';
+export * from "./interfaces"
+export * from "./SyncPreviewPanel"

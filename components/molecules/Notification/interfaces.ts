@@ -1,3 +1,3 @@
 export interface NotificationProps {
-  className?: string;
+  className?: string
 }

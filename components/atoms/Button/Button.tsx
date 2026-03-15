@@ -1,7 +1,8 @@
-import * as React from "react";
+import * as React from "react"
 
-import { cn } from "@/utils/cn";
-import { ButtonProps } from "./interfaces";
+import { cn } from "@/utils/cn"
+
+import { ButtonProps } from "./interfaces"
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "default", size = "default", ...props }, ref) => {
@@ -20,13 +21,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             "h-10 rounded-md px-8": size === "lg",
             "h-9 w-9": size === "icon",
           },
-          className
+          className,
         )}
         {...props}
       />
     )
-  }
+  },
 )
 Button.displayName = "Button"
 
-export { Button };
+export { Button }

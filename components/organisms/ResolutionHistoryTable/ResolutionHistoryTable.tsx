@@ -1,27 +1,30 @@
-'use client';
+"use client"
 
-import { useState } from 'react';
-import { ChevronLeft, ChevronRight, History } from 'lucide-react';
+import { ChevronLeft, ChevronRight, History } from "lucide-react"
+import { useState } from "react"
 
-import { Badge } from '@/components/atoms/Badge';
-import { Button } from '@/components/atoms/Button';
-import { TypographyH3, TypographyMuted } from '@/components/atoms/Typography';
-import { ResolutionHistoryEntry } from '@/modules/integrations/types';
-import { ResolutionHistoryTableProps } from './interfaces';
+import { Badge } from "@/components/atoms/Badge"
+import { Button } from "@/components/atoms/Button"
+import { TypographyH3, TypographyMuted } from "@/components/atoms/Typography"
+import { ResolutionHistoryEntry } from "@/interface/types"
 
-const PAGE_SIZE_DEFAULT = 5;
+import { ResolutionHistoryTableProps } from "./interfaces"
 
-export function ResolutionHistoryTable({ entries, pageSize = PAGE_SIZE_DEFAULT }: ResolutionHistoryTableProps) {
-  const [page, setPage] = useState(1);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+const PAGE_SIZE_DEFAULT = 5
 
-  const totalPages = Math.max(1, Math.ceil(entries.length / pageSize));
-  const safePage = Math.min(page, totalPages);
-  const start = (safePage - 1) * pageSize;
-  const visibleEntries = entries.slice(start, start + pageSize);
+export function ResolutionHistoryTable({
+  entries,
+  pageSize = PAGE_SIZE_DEFAULT,
+}: ResolutionHistoryTableProps) {
+  const [page, setPage] = useState(1)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
 
-  const toggleExpand = (id: string) =>
-    setExpandedId((prev) => (prev === id ? null : id));
+  const totalPages = Math.max(1, Math.ceil(entries.length / pageSize))
+  const safePage = Math.min(page, totalPages)
+  const start = (safePage - 1) * pageSize
+  const visibleEntries = entries.slice(start, start + pageSize)
+
+  const toggleExpand = (id: string) => setExpandedId((prev) => (prev === id ? null : id))
 
   return (
     <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
@@ -62,8 +65,8 @@ export function ResolutionHistoryTable({ entries, pageSize = PAGE_SIZE_DEFAULT }
                     >
                       <td className="px-6 py-4 text-slate-700">
                         {new Date(entry.resolvedAt).toLocaleString(undefined, {
-                          dateStyle: 'medium',
-                          timeStyle: 'short',
+                          dateStyle: "medium",
+                          timeStyle: "short",
                         })}
                       </td>
                       <td className="px-6 py-4">
@@ -72,10 +75,16 @@ export function ResolutionHistoryTable({ entries, pageSize = PAGE_SIZE_DEFAULT }
                       <td className="px-6 py-4">
                         <Badge variant="success">v{entry.resolvedVersion}</Badge>
                       </td>
-                      <td className="px-6 py-4 text-slate-700">{entry.fields.length} field{entry.fields.length !== 1 ? 's' : ''}</td>
+                      <td className="px-6 py-4 text-slate-700">
+                        {entry.fields.length} field{entry.fields.length !== 1 ? "s" : ""}
+                      </td>
                       <td className="px-6 py-4 text-right">
-                        <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 hover:bg-blue-50">
-                          {expandedId === entry.id ? 'Hide' : 'View'} details
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                        >
+                          {expandedId === entry.id ? "Hide" : "View"} details
                         </Button>
                       </td>
                     </tr>
@@ -89,23 +98,31 @@ export function ResolutionHistoryTable({ entries, pageSize = PAGE_SIZE_DEFAULT }
                               <thead className="bg-slate-100 text-slate-500">
                                 <tr>
                                   <th className="px-4 py-2 font-medium text-left">Field</th>
-                                  <th className="px-4 py-2 font-medium text-left">Previous Value</th>
-                                  <th className="px-4 py-2 font-medium text-left">Resolved Value</th>
+                                  <th className="px-4 py-2 font-medium text-left">
+                                    Previous Value
+                                  </th>
+                                  <th className="px-4 py-2 font-medium text-left">
+                                    Resolved Value
+                                  </th>
                                   <th className="px-4 py-2 font-medium text-left">Action</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-slate-100">
                                 {entry.fields.map((f) => (
                                   <tr key={f.fieldName} className="bg-white">
-                                    <td className="px-4 py-2 font-semibold text-slate-800">{f.fieldName}</td>
+                                    <td className="px-4 py-2 font-semibold text-slate-800">
+                                      {f.fieldName}
+                                    </td>
                                     <td className="px-4 py-2 text-slate-500 line-through">
-                                      {f.previousValue ?? <span className="not-italic text-slate-400">—</span>}
+                                      {f.previousValue ?? (
+                                        <span className="not-italic text-slate-400">—</span>
+                                      )}
                                     </td>
                                     <td className="px-4 py-2 text-emerald-700 font-medium">
                                       {f.resolvedValue ?? <span className="text-slate-400">—</span>}
                                     </td>
                                     <td className="px-4 py-2">
-                                      {f.choice === 'local' ? (
+                                      {f.choice === "local" ? (
                                         <Badge variant="outline">Kept local</Badge>
                                       ) : (
                                         <Badge variant="default">Accepted incoming</Badge>
@@ -144,10 +161,10 @@ export function ResolutionHistoryTable({ entries, pageSize = PAGE_SIZE_DEFAULT }
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                   <Button
                     key={p}
-                    variant={p === safePage ? 'default' : 'ghost'}
+                    variant={p === safePage ? "default" : "ghost"}
                     size="sm"
                     onClick={() => setPage(p)}
-                    className={`px-2.5 ${p === safePage ? 'bg-slate-900 text-white hover:bg-slate-800' : 'text-slate-600'}`}
+                    className={`px-2.5 ${p === safePage ? "bg-slate-900 text-white hover:bg-slate-800" : "text-slate-600"}`}
                   >
                     {p}
                   </Button>
@@ -167,5 +184,5 @@ export function ResolutionHistoryTable({ entries, pageSize = PAGE_SIZE_DEFAULT }
         </>
       )}
     </div>
-  );
+  )
 }

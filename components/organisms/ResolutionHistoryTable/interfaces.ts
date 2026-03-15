@@ -1,7 +1,7 @@
-import { ResolutionHistoryEntry } from "@/modules/integrations/types";
+import { ResolutionHistoryEntry } from "@/interface/types"
 
 export interface ResolutionHistoryTableProps {
-  entries: ResolutionHistoryEntry[];
+  entries: ResolutionHistoryEntry[]
   /** How many rows per page (default: 5) */
-  pageSize?: number;
+  pageSize?: number
 }

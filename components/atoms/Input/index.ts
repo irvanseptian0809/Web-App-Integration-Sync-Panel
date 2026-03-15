@@ -1,2 +1,2 @@
-export * from './Input';
-export * from './interfaces';
+export * from "./Input"
+export * from "./interfaces"

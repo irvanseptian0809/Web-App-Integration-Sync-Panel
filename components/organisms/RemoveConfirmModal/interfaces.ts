@@ -1,8 +1,8 @@
-import { Integration } from "@/modules/integrations/types";
+import { Integration } from "@/interface/types"
 
 export interface RemoveConfirmModalProps {
-    integration: Integration;
-    isOpen: boolean;
-    onClose: () => void;
-    onSuccess?: () => void;
+  integration: Integration
+  isOpen: boolean
+  onClose: () => void
+  onSuccess?: () => void
 }

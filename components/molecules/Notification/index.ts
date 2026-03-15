@@ -1,2 +1,2 @@
-export * from './Notification';
-export * from './interfaces';
+export * from "./interfaces"
+export * from "./Notification"

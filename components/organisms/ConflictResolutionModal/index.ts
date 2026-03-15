@@ -1,2 +1,2 @@
-export * from './ConflictResolutionModal';
-export * from './interfaces';
+export * from "./ConflictResolutionModal"
+export * from "./interfaces"

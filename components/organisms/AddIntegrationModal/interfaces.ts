@@ -1,5 +1,4 @@
-
 export interface AddIntegrationModalProps {
-    isOpen: boolean;
-    onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
 }

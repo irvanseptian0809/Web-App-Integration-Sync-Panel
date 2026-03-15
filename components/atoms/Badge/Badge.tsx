@@ -1,6 +1,6 @@
+import { cn } from "@/utils/cn"
 
-import { cn } from "@/utils/cn";
-import { BadgeProps } from "./interfaces";
+import { BadgeProps } from "./interfaces"
 
 export function Badge({ className, variant = "default", ...props }: BadgeProps) {
   return (
@@ -14,7 +14,7 @@ export function Badge({ className, variant = "default", ...props }: BadgeProps) 
           "border-transparent bg-red-100 text-red-800": variant === "destructive",
           "text-slate-950 border-slate-200": variant === "outline",
         },
-        className
+        className,
       )}
       {...props}
     />

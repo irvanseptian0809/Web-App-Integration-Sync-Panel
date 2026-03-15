@@ -1,55 +1,71 @@
-'use client';
+"use client"
 
-import { AlertTriangle, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { AlertTriangle, Loader2 } from "lucide-react"
+import { useState } from "react"
 
-import { Button } from '@/components/atoms/Button';
-import { Input } from '@/components/atoms/Input';
-import { ModalWrapper } from '@/components/molecules/ModalWrapper';
-import { cn } from '@/utils/cn';
-import { useSyncStore } from '@/modules/sync/store';
-import { RemoveConfirmModalProps } from "./interfaces";
+import { Button } from "@/components/atoms/Button"
+import { Input } from "@/components/atoms/Input"
+import { ModalWrapper } from "@/components/molecules/ModalWrapper"
+import { useIntegrationStore } from "@/stores/integrationStore"
+import { cn } from "@/utils/cn"
 
-export function RemoveConfirmModal({ integration, isOpen, onClose, onSuccess }: RemoveConfirmModalProps) {
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [confirmText, setConfirmText] = useState('');
-  const removeIntegration = useSyncStore((state) => state.removeIntegration);
+import { RemoveConfirmModalProps } from "./interfaces"
+
+export function RemoveConfirmModal({
+  integration,
+  isOpen,
+  onClose,
+  onSuccess,
+}: RemoveConfirmModalProps) {
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [confirmText, setConfirmText] = useState("")
+  const removeIntegration = useIntegrationStore((state) => state.removeIntegration)
 
   const handleConfirm = () => {
-    setIsDeleting(true);
-    
+    setIsDeleting(true)
+
     // Simulate API deletion delay for UX
     setTimeout(() => {
-      removeIntegration(integration.id);
-      setIsDeleting(false);
-      setConfirmText('');
-      onClose();
-      if (onSuccess) onSuccess();
-    }, 600);
-  };
+      removeIntegration(integration.id)
+      setIsDeleting(false)
+      setConfirmText("")
+      onClose()
+      if (onSuccess) onSuccess()
+    }, 600)
+  }
 
-  const isConfirmDisabled = confirmText !== integration.provider || isDeleting;
-  const isError = confirmText.length > 0 && confirmText !== integration.provider;
+  const isConfirmDisabled = confirmText !== integration.provider || isDeleting
+  const isError = confirmText.length > 0 && confirmText !== integration.provider
 
   const footer = (
     <div className="flex items-center gap-3 w-full justify-end">
-      <Button variant="ghost" type="button" onClick={() => { setConfirmText(''); onClose(); }} disabled={isDeleting}>
+      <Button
+        variant="ghost"
+        type="button"
+        onClick={() => {
+          setConfirmText("")
+          onClose()
+        }}
+        disabled={isDeleting}
+      >
         Cancel
       </Button>
-      <Button 
+      <Button
         type="button"
         onClick={handleConfirm}
         disabled={isConfirmDisabled}
         className="bg-red-600 hover:bg-red-700 text-white border-red-600 focus:ring-red-500 disabled:bg-red-300 disabled:border-red-300 disabled:text-white"
       >
         {isDeleting ? (
-          <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Removing...</>
+          <>
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Removing...
+          </>
         ) : (
-          'Yes, Remove Integration'
+          "Yes, Remove Integration"
         )}
       </Button>
     </div>
-  );
+  )
 
   return (
     <ModalWrapper
@@ -64,7 +80,9 @@ export function RemoveConfirmModal({ integration, isOpen, onClose, onSuccess }: 
         <div className="text-sm">
           <p className="font-semibold mb-1">Warning: Destructive Action</p>
           <p className="opacity-90">
-            Removing the <strong>{integration.name}</strong> ({integration.provider}) integration will permanently delete its local synchronization history and configuration. Any pending changes will be discarded.
+            Removing the <strong>{integration.name}</strong> ({integration.provider}) integration
+            will permanently delete its local synchronization history and configuration. Any pending
+            changes will be discarded.
           </p>
         </div>
       </div>
@@ -73,12 +91,15 @@ export function RemoveConfirmModal({ integration, isOpen, onClose, onSuccess }: 
         <label className="block text-sm font-medium text-slate-700 mb-2">
           To confirm, type <strong>{integration.provider}</strong> in the box below
         </label>
-        <Input 
+        <Input
           type="text"
           value={confirmText}
           onChange={(e) => setConfirmText(e.target.value)}
           placeholder={integration.provider}
-          className={cn("w-full transition-colors", isError && "border-red-500 focus-visible:ring-red-500")}
+          className={cn(
+            "w-full transition-colors",
+            isError && "border-red-500 focus-visible:ring-red-500",
+          )}
           disabled={isDeleting}
         />
         {isError && (
@@ -88,5 +109,5 @@ export function RemoveConfirmModal({ integration, isOpen, onClose, onSuccess }: 
         )}
       </div>
     </ModalWrapper>
-  );
+  )
 }

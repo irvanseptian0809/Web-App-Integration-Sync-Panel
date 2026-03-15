@@ -1,18 +1,44 @@
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+import js from "@eslint/js"
+import next from "eslint-config-next"
+import prettier from "eslint-config-prettier"
+import globals from "globals"
 
-const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
-  // Override default ignores of eslint-config-next.
-  globalIgnores([
-    // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-  ]),
-]);
+import unusedImports from "eslint-plugin-unused-imports"
 
-export default eslintConfig;
+export default [
+  js.configs.recommended,
+  ...next,
+  prettier,
+
+  {
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
+
+    plugins: {
+      "unused-imports": unusedImports,
+    },
+
+    rules: {
+      "no-undef": "off",
+      "no-unused-vars": "off",
+      "unused-imports/no-unused-imports": "error",
+      "react/no-unescaped-entities": "off",
+      "import/no-anonymous-default-export": "off",
+      "@next/next/no-img-element": "off",
+      "react-hooks/set-state-in-effect": "off",
+      "unused-imports/no-unused-vars": [
+        "warn",
+        {
+          vars: "all",
+          varsIgnorePattern: "^_",
+          args: "after-used",
+          argsIgnorePattern: "^_",
+        },
+      ],
+    },
+  },
+]

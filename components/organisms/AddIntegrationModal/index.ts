@@ -1,2 +1,2 @@
-export * from './AddIntegrationModal';
-export * from './interfaces';
+export * from "./AddIntegrationModal"
+export * from "./interfaces"

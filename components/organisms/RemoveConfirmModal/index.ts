@@ -1,2 +1,2 @@
-export * from './interfaces';
-export * from './RemoveConfirmModal';
+export * from "./interfaces"
+export * from "./RemoveConfirmModal"

@@ -1,2 +1,2 @@
-export { ResolutionHistoryTable } from './ResolutionHistoryTable';
-export type { ResolutionHistoryTableProps } from './interfaces';
+export type { ResolutionHistoryTableProps } from "./interfaces"
+export { ResolutionHistoryTable } from "./ResolutionHistoryTable"

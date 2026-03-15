@@ -1,2 +1,2 @@
-export * from './DataRow';
-export * from './interfaces';
+export * from "./DataRow"
+export * from "./interfaces"

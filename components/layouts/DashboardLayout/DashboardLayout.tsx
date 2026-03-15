@@ -1,6 +1,6 @@
-import { Layers } from 'lucide-react';
-import Link from 'next/link';
-import React from 'react';
+import { Layers } from "lucide-react"
+import Link from "next/link"
+import React from "react"
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,7 +13,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </div>
             <span className="font-bold tracking-tight text-lg">portier sync</span>
           </Link>
-          
+
           <div className="flex items-center gap-4">
             <div className="w-8 h-8 rounded-full bg-slate-200 border border-slate-300 overflow-hidden">
               <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" alt="User" />
@@ -22,15 +22,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto px-4 py-8 max-w-7xl">
-        {children}
-      </main>
-      
+      <main className="flex-1 container mx-auto px-4 py-8 max-w-7xl">{children}</main>
+
       <footer className="border-t border-slate-200 py-6 bg-white mt-auto">
         <div className="container mx-auto px-4 text-center text-sm text-slate-500">
           &copy; {new Date().getFullYear()} portier. All rights reserved.
         </div>
       </footer>
     </div>
-  );
+  )
 }

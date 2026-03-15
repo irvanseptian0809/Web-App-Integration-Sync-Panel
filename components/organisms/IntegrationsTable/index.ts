@@ -1,2 +1,2 @@
-export * from './IntegrationsTable';
-export * from './interfaces';
+export * from "./IntegrationsTable"
+export * from "./interfaces"
