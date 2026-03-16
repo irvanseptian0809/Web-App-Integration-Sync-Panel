@@ -6,8 +6,8 @@ import React, { useMemo, useState } from "react"
 import { Button } from "@/components/atoms/Button"
 import { TypographyH2, TypographyP } from "@/components/atoms/Typography"
 import { DashboardLayout } from "@/components/layouts/DashboardLayout"
-import { AddIntegrationModal } from "@/components/organisms/AddIntegrationModal"
-import { IntegrationsTable } from "@/components/organisms/IntegrationsTable"
+import { AddIntegrationModal } from "@/components/pages/integrations/AddIntegrationModal"
+import { IntegrationsTable } from "@/components/pages/integrations/IntegrationsTable"
 import { useIntegrationStore } from "@/stores/integrations/integrationsStore"
 
 export default function Home() {

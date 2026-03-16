@@ -132,11 +132,7 @@ export function DoorsTable({
       data={doors}
       columns={columns}
       onRowClick={(door) => {
-        if (onToggleRow && door.id) {
-          onToggleRow(door.id)
-        } else if (door.id) {
-          router.push(`/doors/${door.id}`)
-        }
+        router.push(`/doors/${door.id}`)
       }}
       rowClassName={(door) => selectedIds.has(door.id || "") ? "bg-blue-50/40 hover:bg-blue-50/60" : ""}
       emptyMessage="No doors found."

@@ -133,13 +133,7 @@ export function UsersTable({
     <DataTable
       data={users}
       columns={columns}
-      onRowClick={(user) => {
-        if (onToggleRow && user.id) {
-          onToggleRow(user.id)
-        } else if (user.id) {
-          router.push(`/users/${user.id}`)
-        }
-      }}
+      onRowClick={(user) => { router.push(`/users/${user.id}`) }}
       rowClassName={(user) => selectedIds.has(user.id || "") ? "bg-blue-50/40 hover:bg-blue-50/60" : ""}
       emptyMessage="No users found."
       className="border-none shadow-none rounded-none"
