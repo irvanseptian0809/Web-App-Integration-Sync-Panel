@@ -66,4 +66,39 @@ describe("integrationStore", () => {
     expect(useIntegrationStore.getState().resolutions["int_1"]).toBeUndefined()
     expect(useIntegrationStore.getState().pendingChanges["int_1"]).toBeUndefined()
   })
+
+  it("should update pending changes (remove matched DELETE)", () => {
+    const changes = [
+      { id: "c1", field_name: "name", change_type: "DELETE" as const, current_value: "John", new_value: null },
+      { id: "c2", field_name: "age", change_type: "UPDATE" as const, current_value: "20", new_value: "21" }
+    ]
+    useIntegrationStore.getState().setPendingChanges("int_1", changes)
+    
+    // Call with matching local value for the DELETE change
+    useIntegrationStore.getState().updatePendingChanges("int_1", "John")
+    
+    const updatedChanges = useIntegrationStore.getState().pendingChanges["int_1"]
+    expect(updatedChanges).toHaveLength(1)
+    expect(updatedChanges[0].id).toBe("c2")
+  })
+
+  it("should handle updatePendingChanges when no changes exist for id", () => {
+    // Should not crash
+    useIntegrationStore.getState().updatePendingChanges("non_existent", "val")
+    expect(useIntegrationStore.getState().pendingChanges["non_existent"]).toBeUndefined()
+  })
+
+  it("should record resolution history", () => {
+    const entry: ResolutionHistoryEntry = {
+      id: "res_1",
+      integrationId: "int_1",
+      resolvedAt: new Date().toISOString(),
+      previousVersion: 1,
+      resolvedVersion: 2,
+      fields: [{ fieldName: "email", previousValue: "a", resolvedValue: "b", choice: "c1" }]
+    }
+    useIntegrationStore.getState().recordResolution(entry)
+    expect(useIntegrationStore.getState().conflictHistory["int_1"]).toHaveLength(1)
+    expect(useIntegrationStore.getState().conflictHistory["int_1"][0]).toEqual(entry)
+  })
 })

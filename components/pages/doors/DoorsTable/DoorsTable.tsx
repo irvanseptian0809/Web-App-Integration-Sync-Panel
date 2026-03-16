@@ -63,6 +63,16 @@ export function DoorsTable({
       ),
     },
     {
+      header: "Integration",
+      accessor: "name",
+      className: "px-4 py-4",
+      render: (door) => (
+        <div className="flex items-center gap-2 text-sm text-slate-600">
+          <div className="text-xs text-slate-500">{door?.provider || "-"}</div>
+        </div>
+      ),
+    },
+    {
       header: "Location",
       accessor: "location",
       render: (door) => (

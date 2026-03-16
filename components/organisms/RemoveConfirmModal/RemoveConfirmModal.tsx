@@ -30,7 +30,6 @@ export function RemoveConfirmModal({
   const handleConfirm = () => {
     setIsDeleting(true)
 
-    // Simulate API deletion delay for UX
     setTimeout(() => {
       removeUsersByProvider(integration.provider)
       removeDoorsByProvider(integration.provider)

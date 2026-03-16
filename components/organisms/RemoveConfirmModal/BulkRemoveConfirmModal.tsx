@@ -21,7 +21,7 @@ export function BulkRemoveConfirmModal({
 
   const handleConfirm = () => {
     setIsDeleting(true)
-    // Simulate slight delay for UX feel
+
     setTimeout(() => {
       onConfirm()
       setIsDeleting(false)

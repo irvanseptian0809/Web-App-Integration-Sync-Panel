@@ -1,10 +1,10 @@
 "use client"
 
+import React, { useState } from "react"
 import { useMutation } from "@tanstack/react-query"
 import { RefreshCw, Trash2 } from "lucide-react"
 import { AlertCircle, CalendarSync, Database } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
-import React, { useState } from "react"
 
 import { Badge } from "@/components/atoms/Badge"
 import { Button } from "@/components/atoms/Button"
@@ -158,7 +158,6 @@ export default function IntegrationDetailPage() {
       </div>
 
       <div className="flex flex-col gap-8">
-        {/* Sync Summary Card - Redesigned for Efficiency */}
         <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <TypographyH3 className="text-lg">Sync Summary</TypographyH3>
@@ -199,7 +198,6 @@ export default function IntegrationDetailPage() {
         </div>
       </div>
 
-      {/* Resolution History Table */}
       <div className="mt-8">
         <ResolutionHistoryTable entries={conflictHistory} pageSize={5} />
       </div>

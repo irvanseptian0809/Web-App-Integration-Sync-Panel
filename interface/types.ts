@@ -22,7 +22,7 @@ export interface SyncEvent {
 export interface SyncChange {
   id: string
   field_name: string
-  change_type: "UPDATE" | "CREATE" | "DELETE"
+  change_type: "UPDATE" | "CREATE" | "DELETE" | "ADD"
   current_value: string | null
   new_value: string | null
 }

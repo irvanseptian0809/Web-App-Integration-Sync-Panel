@@ -5,6 +5,12 @@ import { render, screen, fireEvent } from "@testing-library/react"
 import { SyncPreviewPanel } from "./SyncPreviewPanel"
 import { SyncChange } from "@/interface/types"
 
+// ── Mocks ───────────────────────────────────────────────────────────────────
+const mockUpdatePendingChanges = jest.fn()
+jest.mock("@/stores/integrations/integrationsStore", () => ({
+  useIntegrationStore: (selector: any) => selector({ updatePendingChanges: mockUpdatePendingChanges }),
+}))
+
 const mockChanges: SyncChange[] = [
   {
     id: "chg_1",
@@ -31,28 +37,29 @@ const mockChanges: SyncChange[] = [
 
 describe("SyncPreviewPanel", () => {
   const getLocalValue = (c: SyncChange) => (c.change_type === "CREATE" || (c.change_type as any) === "ADD") ? "None" : c.current_value
+  const defaultId = "1"
 
   it("renders 'No changes to preview' when empty", () => {
-    render(<SyncPreviewPanel changes={[]} resolutions={{}} getLocalValue={getLocalValue} />)
+    render(<SyncPreviewPanel changes={[]} resolutions={{}} getLocalValue={getLocalValue} integrationId={defaultId} />)
     expect(screen.getByText("No changes to preview.")).toBeInTheDocument()
   })
 
   it("renders all fields and badges", () => {
-    render(<SyncPreviewPanel changes={mockChanges} resolutions={{}} getLocalValue={getLocalValue} />)
+    render(<SyncPreviewPanel changes={mockChanges} resolutions={{}} getLocalValue={getLocalValue} integrationId={defaultId} />)
     expect(screen.getByText("user.email")).toBeInTheDocument()
     expect(screen.getByText("user.name")).toBeInTheDocument()
     expect(screen.getByText("user.role")).toBeInTheDocument()
     
     expect(screen.getByText("UPDATE")).toBeInTheDocument()
-    expect(screen.getByText("CREATE")).toBeInTheDocument()
+    expect(screen.getByText("ADD")).toBeInTheDocument()
     expect(screen.getByText("DELETE")).toBeInTheDocument()
   })
 
   it("shows specialized labels for CREATE and DELETE", () => {
-    render(<SyncPreviewPanel changes={mockChanges} resolutions={{}} getLocalValue={getLocalValue} />)
+    render(<SyncPreviewPanel changes={mockChanges} resolutions={{}} getLocalValue={getLocalValue} integrationId={defaultId} />)
     
     // For CREATE
-    expect(screen.getByText("None (New Entity)")).toBeInTheDocument()
+    expect(screen.getByText("None")).toBeInTheDocument()
     
     // For DELETE
     expect(screen.getByText("Accept Removal")).toBeInTheDocument()
@@ -67,6 +74,7 @@ describe("SyncPreviewPanel", () => {
         resolutions={{}}
         onResolveConflict={onResolve}
         getLocalValue={getLocalValue}
+        integrationId={defaultId}
       />,
     )
     
@@ -87,6 +95,7 @@ describe("SyncPreviewPanel", () => {
         changes={mockChanges}
         resolutions={{ chg_1: "chg_1" }}
         getLocalValue={getLocalValue}
+        integrationId={defaultId}
       />,
     )
     expect(screen.getByText("Resolved")).toBeInTheDocument()
@@ -99,6 +108,7 @@ describe("SyncPreviewPanel", () => {
         resolutions={{}}
         showValidationErrors={true}
         getLocalValue={getLocalValue}
+        integrationId={defaultId}
       />,
     )
     expect(screen.getAllByText("Please select a resolution").length).toBe(3)

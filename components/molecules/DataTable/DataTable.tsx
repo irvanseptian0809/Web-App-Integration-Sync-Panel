@@ -34,7 +34,7 @@ export function DataTable<T extends { id?: string }>({
           <tbody className="divide-y divide-slate-100">
             {data.length > 0 ? (
               data.map((item, rowIdx) => (
-                <React.Fragment key={item.id || rowIdx}>
+                <React.Fragment key={rowIdx}>
                   <tr
                     className={cn(
                       "hover:bg-slate-50/50 transition-colors group",

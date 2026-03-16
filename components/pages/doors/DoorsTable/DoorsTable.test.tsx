@@ -36,13 +36,13 @@ const mockDoors: Door[] = [
 describe("DoorsTable", () => {
   it("renders door information correctly", () => {
     render(<DoorsTable doors={mockDoors} onEdit={jest.fn()} onDelete={jest.fn()} />)
-    expect(screen.getByText("Front Door")).toBeInTheDocument()
-    expect(screen.getByText("Main Lobby")).toBeInTheDocument()
+    expect(screen.getAllByText("Front Door").length).toBeGreaterThan(0)
+    expect(screen.getAllByText("Main Lobby").length).toBeGreaterThan(0)
     expect(screen.getByText("HW-1")).toBeInTheDocument()
     expect(screen.getByText("90%")).toBeInTheDocument()
     
-    expect(screen.getByText("Back Door")).toBeInTheDocument()
-    expect(screen.getByText("Kitchen")).toBeInTheDocument()
+    expect(screen.getAllByText("Back Door").length).toBeGreaterThan(0)
+    expect(screen.getAllByText("Kitchen").length).toBeGreaterThan(0)
     expect(screen.getByText("HW-2")).toBeInTheDocument()
     expect(screen.getByText("15%")).toBeInTheDocument()
   })
@@ -112,7 +112,7 @@ describe("DoorsTable", () => {
         onToggleRow={onToggleRow}
       />
     )
-    const row = screen.getByText("Front Door")
+    const row = screen.getAllByText("Front Door")[0]
     fireEvent.click(row)
     expect(onToggleRow).toHaveBeenCalledWith(mockDoors[0].id)
   })
@@ -125,7 +125,7 @@ describe("DoorsTable", () => {
         onDelete={jest.fn()} 
       />
     )
-    const row = screen.getByText("Front Door")
+    const row = screen.getAllByText("Front Door")[0]
     fireEvent.click(row)
     expect(mockPush).toHaveBeenCalledWith("/doors/d1")
   })

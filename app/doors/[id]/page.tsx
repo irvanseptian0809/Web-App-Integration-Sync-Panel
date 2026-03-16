@@ -1,7 +1,7 @@
 "use client"
 
 import { useParams, useRouter } from "next/navigation"
-import { ArrowLeft, MapPin, Cpu, Battery, History, Wifi, Clock } from "lucide-react"
+import { ArrowLeft, MapPin, Cpu, Battery, Wifi, Clock } from "lucide-react"
 import React from "react"
 
 import { Badge } from "@/components/atoms/Badge"

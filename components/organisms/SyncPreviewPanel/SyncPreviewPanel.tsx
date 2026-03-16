@@ -5,9 +5,33 @@ import { TypographyH3, TypographyMuted } from "@/components/atoms/Typography"
 import { cn } from "@/utils/cn"
 
 import { SyncPreviewPanelProps } from "./interfaces"
+import { useIntegrationStore } from "@/stores/integrations"
+import { useEffect, useState } from "react"
 
 export function SyncPreviewPanel(props: SyncPreviewPanelProps) {
-  const { changes, onResolveConflict, resolutions, showValidationErrors, getLocalValue } = props
+  const {
+    changes,
+    onResolveConflict,
+    resolutions,
+    showValidationErrors,
+    getLocalValue,
+    integrationId
+  } = props
+
+  const updatePendingChanges = useIntegrationStore((state) => state.updatePendingChanges)
+  const [conflicts, setConflicts] = useState(changes.filter((c) => {
+    const localValue = getLocalValue(c)
+    if (c.change_type === "DELETE" && (localValue !== c.current_value)) return false
+    return c.new_value !== localValue && c.new_value !== null && c.new_value !== ""
+  }))
+
+  useEffect(() => {
+    conflicts.forEach((c) => {
+      const localValue = getLocalValue(c)
+      updatePendingChanges(integrationId, localValue)
+    })
+  }, [])
+
   if (changes.length === 0) {
     return (
       <div className="p-8 text-center border border-dashed border-slate-300 rounded-xl bg-slate-50">
@@ -15,11 +39,6 @@ export function SyncPreviewPanel(props: SyncPreviewPanelProps) {
       </div>
     )
   }
-
-  const conflicts = changes.filter((c) => {
-    const localValue = getLocalValue(c)
-    return c.new_value !== localValue && c.new_value !== null && c.new_value !== ""
-  })
 
   const fieldCount = conflicts.length
 
@@ -41,24 +60,37 @@ export function SyncPreviewPanel(props: SyncPreviewPanelProps) {
         {changes.map((change) => {
           const localValue = getLocalValue(change)
 
-          // Show all conflicts (divergence from local)
-          // Also show CREATE/ADD as they always represent a "change" compared to baseline sync
-          // If update but local is missing, it's also a creation flow
-          const isCreate = change.change_type === "CREATE" || (change.change_type as string) === "ADD" || (change.change_type === "UPDATE" && (localValue === "None" || localValue === null))
-
-          const isConflict =
-            isCreate ||
-            change.change_type === "DELETE" ||
-            (change.change_type === "UPDATE" && change.new_value !== localValue && change.new_value !== null && change.new_value !== "")
+          let currentType = "ADD"
+          let remoteLabel = "None"
+          let localLabel = "None"
+          let isConflict = false
+          if (
+            change.change_type === "CREATE" ||
+            (change.change_type as string) === "ADD" ||
+            (change.change_type === "UPDATE" && (localValue !== change.current_value))
+          ) {
+            localLabel = localValue || "None"
+            remoteLabel = change.new_value || "None"
+            isConflict = true
+          } else if (change.change_type === "DELETE" && (localValue === change.current_value)) {
+            localLabel = change.current_value || "None"
+            remoteLabel = "REMOVED"
+            currentType = "DELETE"
+            isConflict = true
+          } else if (
+            change.change_type === "UPDATE" && (localValue === change.current_value) ||
+            change.change_type === "ADD" && (localValue === change.current_value)
+          ) {
+            localLabel = change.current_value || "None"
+            remoteLabel = change.new_value || "None"
+            currentType = "UPDATE"
+            isConflict = true
+          }
 
           if (!isConflict) return null
 
           const chosenId = resolutions[change.id]
           const isResolved = chosenId !== undefined
-
-          // Customize labels based on change type
-          const localLabel = isCreate ? "None (New Entity)" : (localValue ?? "None")
-          const remoteLabel = change.change_type === "DELETE" ? "REMOVED" : (change.new_value || "None")
 
           return (
             <div key={change.id} className="p-6 hover:bg-slate-50/30 transition-colors">
@@ -69,11 +101,11 @@ export function SyncPreviewPanel(props: SyncPreviewPanelProps) {
                 <Badge
                   variant={
                     change.change_type === "DELETE" ? "destructive" :
-                      isCreate ? "default" : "warning"
+                      currentType === "ADD" ? "default" : "warning"
                   }
                   className="!text-[10px] uppercase"
                 >
-                  {change.change_type}
+                  {currentType}
                 </Badge>
                 {isResolved && (
                   <Badge variant="success" className="!text-[10px] uppercase ml-auto">
@@ -88,7 +120,6 @@ export function SyncPreviewPanel(props: SyncPreviewPanelProps) {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
-                {/* ── Keep Local option ── */}
                 <button
                   type="button"
                   onClick={() => onResolveConflict && onResolveConflict(change, "local")}
@@ -106,7 +137,7 @@ export function SyncPreviewPanel(props: SyncPreviewPanelProps) {
                 >
                   <div className="flex items-center justify-between mb-1">
                     <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
-                      Keep Local {!isCreate ? `(${change.current_value})` : ""}
+                      Keep Local
                     </div>
                     {chosenId === "local" && <Check className="w-3.5 h-3.5 text-blue-600" />}
                   </div>
@@ -122,7 +153,6 @@ export function SyncPreviewPanel(props: SyncPreviewPanelProps) {
                   </div>
                 </button>
 
-                {/* ── Remote option ── */}
                 <button
                   type="button"
                   onClick={() => onResolveConflict && onResolveConflict(change, change.id)}

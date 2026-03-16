@@ -10,7 +10,7 @@ import { useIntegrationStore } from "@/stores/integrations/integrationsStore"
 import { useUserStore } from "@/stores/users/usersStore"
 import { useKeyStore } from "@/stores/keys/keysStore"
 import { useDoorStore } from "@/stores/doors/doorsStore"
-import { User, Key, Door } from "@/interface/types"
+import { User, Key } from "@/interface/types"
 
 import { ReviewChangesModalProps } from "./interfaces"
 
@@ -42,7 +42,6 @@ export function ReviewChangesModal({ integration, isOpen, onClose }: ReviewChang
 
   const [showValidation, setShowValidation] = useState(false)
 
-  // Helper to find local entity for a specific change
   const findLocalEntity = (change: any) => {
     const [entityType, field] = change.field_name.split(".")
     const provider = integration.provider
@@ -61,15 +60,14 @@ export function ReviewChangesModal({ integration, isOpen, onClose }: ReviewChang
 
   const hasPendingChanges = pendingChanges.length > 0
 
-  // Resolve check: Only changes that ACTUALLY differ from current store state need resolution
   const conflictChanges = pendingChanges.filter((c) => {
-    if (c.change_type === "CREATE" || (c.change_type as string) === "ADD") return true // Adding always needs review
-    if (c.change_type === "DELETE") return true // Deleting always needs review
 
     const localEntity = findLocalEntity(c)
     const [_, field] = c.field_name.split(".")
     const localValue = localEntity ? (localEntity as any)[field] : "None"
 
+    if (c.change_type === "CREATE" || (c.change_type as string) === "ADD") return true
+    if (c.change_type === "DELETE" && (localValue !== c.current_value)) return false
     return c.new_value !== localValue && c.new_value !== null && c.new_value !== ""
   })
 
@@ -88,10 +86,6 @@ export function ReviewChangesModal({ integration, isOpen, onClose }: ReviewChang
     const nextVersion = previousVersion + 1
 
     const fieldHistory: any[] = []
-
-    // Process each change individually for precise updates
-    // For ADD, we need to group contiguous changes for the same entity
-    // We'll track "pending additions" objects
     let pendingUser: any = null
     let pendingKey: any = null
     let pendingDoor: any = null
@@ -105,7 +99,6 @@ export function ReviewChangesModal({ integration, isOpen, onClose }: ReviewChang
 
       if (!shouldApply) return
 
-      // --- HANDLE DELETE ---
       if (change.change_type === "DELETE" && localEntity && localEntity.id) {
         if (entityType === "user") removeUser(localEntity.id)
         if (entityType === "key") removeKey(localEntity.id)
@@ -120,12 +113,14 @@ export function ReviewChangesModal({ integration, isOpen, onClose }: ReviewChang
         return
       }
 
-      // --- HANDLE ADD/CREATE ---
-      if (change.change_type === "CREATE" || (change.change_type as string) === "ADD") {
+      if (
+        change.change_type === "CREATE" ||
+        (change.change_type as string) === "ADD" ||
+        (change.change_type === "UPDATE" && ((localEntity as any)?.[field] !== change.current_value))
+      ) {
         const newValue = change.new_value || change.current_value
 
         if (entityType === "user") {
-          // If field already exists in pendingUser, it means we've started a new user record
           if (pendingUser && (field === "id" || pendingUser[field] !== undefined)) {
             addUser(pendingUser)
             pendingUser = null
@@ -182,20 +177,18 @@ export function ReviewChangesModal({ integration, isOpen, onClose }: ReviewChang
         }
         return
       }
+      const newValue = change.new_value ?? null
 
-      // --- HANDLE UPDATE ---
+      if (isConflict) {
+        fieldHistory.push({
+          fieldName: change.field_name,
+          previousValue: (localEntity as any)?.[field] ?? null,
+          resolvedValue: newValue,
+          choice,
+        })
+      }
+
       if (shouldApply && localEntity) {
-        const newValue = change.new_value ?? null
-
-        if (isConflict) {
-          fieldHistory.push({
-            fieldName: change.field_name,
-            previousValue: (localEntity as any)[field] ?? null,
-            resolvedValue: newValue,
-            choice,
-          })
-        }
-
         const updatedEntity = { ...localEntity, [field]: newValue }
         if (entityType === "user") updateUser(updatedEntity as User)
         if (entityType === "key") updateKey(updatedEntity as Key)
@@ -203,12 +196,6 @@ export function ReviewChangesModal({ integration, isOpen, onClose }: ReviewChang
       }
     })
 
-    // Flush any remaining pending additions
-    if (pendingUser) addUser(pendingUser)
-    if (pendingKey) addKey(pendingKey)
-    if (pendingDoor) addDoor(pendingDoor)
-
-    // Only record resolution history if changes were merged
     if (fieldHistory.length > 0) {
       recordResolution({
         id: `res_${Date.now()}`,
@@ -256,6 +243,7 @@ export function ReviewChangesModal({ integration, isOpen, onClose }: ReviewChang
           <SyncPreviewPanel
             changes={pendingChanges}
             resolutions={resolutions}
+            integrationId={integration.id}
             onResolveConflict={(change, choice) => {
               setResolution(integration.id, change.id, choice)
               if (showValidation) setShowValidation(false)

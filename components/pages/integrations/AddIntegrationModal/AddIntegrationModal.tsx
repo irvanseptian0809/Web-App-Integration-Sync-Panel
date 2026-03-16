@@ -45,8 +45,6 @@ export function AddIntegrationModal({ isOpen, onClose }: AddIntegrationModalProp
       }
     },
     onSuccess: ({ provider, data }) => {
-      // Process Sync Data into structured entities
-      // We use the same sequential grouping logic as ReviewChangesModal
       let pendingUser: any = null
       let pendingKey: any = null
       let pendingDoor: any = null
@@ -107,7 +105,6 @@ export function AddIntegrationModal({ isOpen, onClose }: AddIntegrationModalProp
         }
       })
 
-      // Flush any remaining pending additions
       if (pendingUser) addUser(pendingUser)
       if (pendingKey) addKey(pendingKey)
       if (pendingDoor) addDoor(pendingDoor)

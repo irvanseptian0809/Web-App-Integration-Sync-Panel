@@ -1,8 +1,8 @@
 "use client"
 
-import { useParams, useRouter } from "next/navigation"
-import { ArrowLeft, Key as KeyIcon, User, DoorOpen, Calendar, ShieldCheck, Activity } from "lucide-react"
 import React from "react"
+import { useParams, useRouter } from "next/navigation"
+import { ArrowLeft, Key as KeyIcon, User, DoorOpen, Calendar, ShieldCheck } from "lucide-react"
 
 import { Badge } from "@/components/atoms/Badge"
 import { Button } from "@/components/atoms/Button"

@@ -244,7 +244,6 @@ export default function UsersPage() {
         onToggleAll={toggleSelectAll}
       />
 
-      {/* Add User Modal */}
       <ModalWrapper
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
@@ -254,7 +253,6 @@ export default function UsersPage() {
         <UserForm onSubmit={handleAddUser} onCancel={() => setIsAddModalOpen(false)} />
       </ModalWrapper>
 
-      {/* Edit User Modal */}
       <ModalWrapper
         isOpen={!!editingUser}
         onClose={() => setEditingUser(null)}
@@ -270,7 +268,6 @@ export default function UsersPage() {
         )}
       </ModalWrapper>
 
-      {/* Delete User Modal */}
       <EntityDeleteModal
         isOpen={!!deletingUserId}
         onClose={() => setDeletingUserId(null)}

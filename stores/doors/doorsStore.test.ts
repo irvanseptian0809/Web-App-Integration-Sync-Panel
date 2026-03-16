@@ -40,9 +40,20 @@ describe("doorStore", () => {
     expect(useDoorStore.getState().doors[0].name).toBe("Main Entrance Updated")
   })
 
-  it("should remove a door", () => {
+  it("should remove doors by provider", () => {
     const doorId = "d1"
-    useDoorStore.getState().removeDoor(doorId)
-    expect(useDoorStore.getState().doors.find((d) => d.id === doorId)).toBeUndefined()
+    useDoorStore.getState().addDoor({
+      id: "d4",
+      name: "Test",
+      location: "Loc",
+      device_id: "dev_004",
+      status: "online",
+      battery_level: 50,
+      last_seen: "",
+      created_at: "",
+      provider: "hubspot"
+    })
+    useDoorStore.getState().removeDoorsByProvider("hubspot")
+    expect(useDoorStore.getState().doors.find((d) => d.provider === "hubspot")).toBeUndefined()
   })
 })

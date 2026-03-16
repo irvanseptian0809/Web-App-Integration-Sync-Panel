@@ -37,7 +37,6 @@ export function ConflictResolutionModal({
       footer={footer}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-        {/* Local Option */}
         <button
           onClick={() => handleResolve("local")}
           className={cn(
@@ -61,7 +60,6 @@ export function ConflictResolutionModal({
           </div>
         </button>
 
-        {/* Remote Option */}
         <button
           onClick={() => handleResolve("remote")}
           className={cn(

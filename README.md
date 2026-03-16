@@ -2,6 +2,8 @@
 
 A robust integration and synchronization dashboard built with Next.js 15, Zustand, and Tailwind CSS. This application manages synchronized data from external providers (like Salesforce, HubSpot, Stripe) and provides a sophisticated conflict resolution interface.
 
+Result:https://integrationsync-lovat.vercel.app/
+
 ## Getting Started
 
 ### Prerequisites

@@ -6,4 +6,5 @@ export interface SyncPreviewPanelProps {
   onResolveConflict?: (change: SyncChange, choice: "local" | string) => void
   showValidationErrors?: boolean
   getLocalValue: (change: SyncChange) => any
+  integrationId: string
 }

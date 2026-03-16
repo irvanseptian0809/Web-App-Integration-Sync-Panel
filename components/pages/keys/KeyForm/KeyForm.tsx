@@ -44,8 +44,8 @@ export function KeyForm({ initialData, onSubmit, onCancel, isSubmitting }: KeyFo
             required
           >
             <option value="" disabled>Select User</option>
-            {users.map(user => (
-              <option key={user.id} value={user.id}>{user.name}</option>
+            {users.filter((item) => item.name || item.email || item.phone).map((user, index) => (
+              <option key={index} value={user.id}>{user.name || user.email || user.phone}</option>
             ))}
           </select>
         </div>
@@ -60,8 +60,8 @@ export function KeyForm({ initialData, onSubmit, onCancel, isSubmitting }: KeyFo
             required
           >
             <option value="" disabled>Select Door</option>
-            {doors.map(door => (
-              <option key={door.id} value={door.id}>{door.name} ({door.location})</option>
+            {doors.filter((item) => item.name || item.location).map((door, index) => (
+              <option key={index} value={door.id}>{door.name} ({door.location})</option>
             ))}
           </select>
         </div>

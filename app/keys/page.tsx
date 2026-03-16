@@ -97,7 +97,6 @@ export default function KeysPage() {
         onDelete={setDeletingKeyId}
       />
 
-      {/* Issue Key Modal */}
       <ModalWrapper
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
@@ -107,7 +106,6 @@ export default function KeysPage() {
         <KeyForm onSubmit={handleAddKey} onCancel={() => setIsAddModalOpen(false)} />
       </ModalWrapper>
 
-      {/* Edit Key Modal */}
       <ModalWrapper
         isOpen={!!editingKey}
         onClose={() => setEditingKey(null)}
@@ -123,7 +121,6 @@ export default function KeysPage() {
         )}
       </ModalWrapper>
 
-      {/* Delete Key Modal */}
       <EntityDeleteModal
         isOpen={!!deletingKeyId}
         onClose={() => setDeletingKeyId(null)}

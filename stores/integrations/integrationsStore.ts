@@ -37,6 +37,23 @@ export const useIntegrationStore = create<IntegrationState>()(
           pendingChanges: { ...state.pendingChanges, [integrationId]: changes },
           resolutions: { ...state.resolutions, [integrationId]: {} },
         })),
+      updatePendingChanges: (integrationId, localValue) =>
+        set((state) => {
+          const currentChanges = state.pendingChanges[integrationId]
+          if (!currentChanges) return state
+
+          return {
+            pendingChanges: {
+              ...state.pendingChanges,
+              [integrationId]: currentChanges.filter((item) => {
+                if (item.change_type === "DELETE" && item.current_value === localValue) {
+                  return false
+                }
+                return true
+              }),
+            },
+          }
+        }),
 
       resolutions: {},
       setResolution: (integrationId, fieldName, choice) =>

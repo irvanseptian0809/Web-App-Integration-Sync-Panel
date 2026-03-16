@@ -40,6 +40,28 @@ describe("keyStore", () => {
     expect(useKeyStore.getState().keys[0].key_type).toBe("Updated Key Type")
   })
 
+  it("should remove keys by provider", () => {
+    useKeyStore.getState().addKey({
+      id: "k3",
+      user_id: "u3",
+      door_id: "d3",
+      key_type: "Physical",
+      access_start: "",
+      access_end: "",
+      status: "active",
+      created_at: "",
+      provider: "hubspot"
+    })
+    useKeyStore.getState().removeKeysByProvider("hubspot")
+    expect(useKeyStore.getState().keys.find((k) => k.provider === "hubspot")).toBeUndefined()
+  })
+
+  it("should set keys", () => {
+    const newKeys = [{ id: "kx", user_id: "ux", door_id: "dx", key_type: "Digital", access_start: "", access_end: "", status: "active", created_at: "" }] as Key[]
+    useKeyStore.getState().setKeys(newKeys)
+    expect(useKeyStore.getState().keys).toEqual(newKeys)
+  })
+
   it("should remove a key", () => {
     const keyId = "k1"
     useKeyStore.getState().removeKey(keyId)
