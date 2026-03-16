@@ -1,7 +1,7 @@
 "use client"
 
 import { ChevronLeft, ChevronRight, History } from "lucide-react"
-import { useState } from "react"
+import React, { useState } from "react"
 
 import { Badge } from "@/components/atoms/Badge"
 import { Button } from "@/components/atoms/Button"
@@ -57,9 +57,8 @@ export function ResolutionHistoryTable({
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {visibleEntries.map((entry: ResolutionHistoryEntry) => (
-                  <>
+                  <React.Fragment key={entry.id}>
                     <tr
-                      key={entry.id}
                       className="hover:bg-slate-50/50 transition-colors cursor-pointer"
                       onClick={() => toggleExpand(entry.id)}
                     >
@@ -91,7 +90,7 @@ export function ResolutionHistoryTable({
 
                     {/* Expandable field details */}
                     {expandedId === entry.id && (
-                      <tr key={`${entry.id}-detail`}>
+                      <tr>
                         <td colSpan={5} className="px-6 pb-5 bg-slate-50/60">
                           <div className="rounded-lg border border-slate-100 overflow-hidden mt-1">
                             <table className="w-full text-xs">
@@ -136,7 +135,7 @@ export function ResolutionHistoryTable({
                         </td>
                       </tr>
                     )}
-                  </>
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>

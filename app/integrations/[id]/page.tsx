@@ -2,21 +2,19 @@
 
 import { useMutation } from "@tanstack/react-query"
 import { RefreshCw, Trash2 } from "lucide-react"
-import { AlertCircle, CalendarSync, Clock, Database, History } from "lucide-react"
+import { AlertCircle, CalendarSync, Clock, Database } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import React, { useState } from "react"
 
 import { Badge } from "@/components/atoms/Badge"
 import { Button } from "@/components/atoms/Button"
-import { TypographyH3, TypographyMuted, TypographyP } from "@/components/atoms/Typography"
+import { TypographyH3, TypographyMuted } from "@/components/atoms/Typography"
 import { DataRow } from "@/components/molecules/DataRow"
 import { StatusIndicator } from "@/components/molecules/StatusIndicator"
 import { RemoveConfirmModal } from "@/components/organisms/RemoveConfirmModal"
 import { ResolutionHistoryTable } from "@/components/organisms/ResolutionHistoryTable"
 import { ReviewChangesModal } from "@/components/organisms/ReviewChangesModal"
 import { SyncDetailTemplate } from "@/components/templates/SyncDetailTemplate"
-import { mockLocalData, mockSyncHistory } from "@/modules/integrations/mockData"
-import { SyncEvent } from "@/interface/types"
 import { syncApi } from "@/services/syncApi"
 import { useIntegrationStore } from "@/stores/integrationStore"
 import { useNotificationStore } from "@/stores/notificationStore"
@@ -29,8 +27,7 @@ export default function IntegrationDetailPage() {
 
   const integrations = useIntegrationStore((state) => state.integrations)
   const integration = integrations.find((i) => i.id === integrationId)
-  const history = mockSyncHistory[integrationId] || []
-  const localData = mockLocalData[integrationId] || []
+  const localData = []
 
   const pendingChanges = useIntegrationStore((state) => state.pendingChanges[integrationId]) || []
   const conflictHistory = useIntegrationStore((state) => state.conflictHistory[integrationId]) || []
@@ -144,9 +141,9 @@ export default function IntegrationDetailPage() {
           <div className="text-3xl font-bold text-slate-900">
             {integration.lastSyncTime
               ? new Date(integration.lastSyncTime).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
+                hour: "2-digit",
+                minute: "2-digit",
+              })
               : "--:--"}
           </div>
           <TypographyMuted className="text-xs mt-1">
@@ -185,72 +182,6 @@ export default function IntegrationDetailPage() {
                     : "Never"}
                 </span>
               </div>
-            </div>
-
-            {/* Mixed in user explicit request to render local data inside this summary segment */}
-            <TypographyH3 className="text-lg mb-4">Current Local Data Snapshot</TypographyH3>
-            <div className="border border-slate-100 rounded-xl overflow-hidden divide-y divide-slate-100">
-              {localData.length > 0 ? (
-                localData.map((data: any, idx: number) => (
-                  <DataRow
-                    key={idx}
-                    label={data.label}
-                    value={data.value}
-                    className="px-5 py-4 hover:bg-slate-50/50"
-                  />
-                ))
-              ) : (
-                <div className="p-4 text-sm text-slate-500 text-center">No local data mapped.</div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column: Historical Activity */}
-        <div className="w-full lg:w-96 shrink-0">
-          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-            <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-              <TypographyH3 className="text-lg">Sync History</TypographyH3>
-              <Button size="sm" variant="outline" className="hidden">
-                <History className="w-4 h-4 mr-2" /> View Full
-              </Button>
-            </div>
-
-            <div className="divide-y divide-slate-100">
-              {history.length > 0 ? (
-                history.map((event: SyncEvent) => (
-                  <div key={event.id} className="p-5 flex flex-col gap-2">
-                    <div className="flex items-center justify-between">
-                      <Badge
-                        variant={
-                          event.status === "SUCCESS"
-                            ? "success"
-                            : event.status === "CONFLICT"
-                              ? "warning"
-                              : "destructive"
-                        }
-                      >
-                        {event.status}
-                      </Badge>
-                      <TypographyMuted className="text-xs">
-                        {event.timestamp ? new Date(event.timestamp).toLocaleString() : ""}
-                      </TypographyMuted>
-                    </div>
-                    <div>
-                      <TypographyP className="!mt-2 font-medium text-slate-800 text-sm">
-                        Version {event.version} updated
-                      </TypographyP>
-                      <TypographyMuted className="text-xs mt-0.5">
-                        {event.changesCount} record(s) changed
-                      </TypographyMuted>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="p-8 text-center bg-slate-50/50">
-                  <TypographyMuted>No past syncs detected.</TypographyMuted>
-                </div>
-              )}
             </div>
           </div>
         </div>

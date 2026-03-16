@@ -39,6 +39,7 @@ export function Notification({ className }: NotificationProps) {
   return (
     <div className="fixed bottom-4 right-4 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300">
       <div
+        role="alert"
         className={cn(
           "flex items-start gap-3 p-4 rounded-lg border shadow-lg max-w-sm w-full",
           bgColors[type],

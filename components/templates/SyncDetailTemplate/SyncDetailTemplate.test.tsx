@@ -2,13 +2,16 @@ import "@testing-library/jest-dom"
 import React from "react"
 import { render, screen } from "@testing-library/react"
 import { SyncDetailTemplate } from "./SyncDetailTemplate"
+import { Integration } from "@/interface/types"
 
-const mockIntegration = {
+const mockIntegration: Integration = {
   id: "1",
   name: "Salesforce",
   logo: "https://example.com/logo.png",
-  status: "synced" as const,
-  version: "1.0.0",
+  status: "synced",
+  version: 1,
+  provider: "salesforce",
+  lastSyncTime: new Date().toISOString(),
 }
 
 describe("SyncDetailTemplate", () => {
