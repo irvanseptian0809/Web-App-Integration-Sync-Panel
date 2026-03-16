@@ -3,7 +3,7 @@ export type SyncStatus = "synced" | "syncing" | "conflict" | "error"
 export interface Integration {
   id: string
   name: string
-  provider: "salesforce" | "hubspot" | "stripe" | "slack" | "zendesk" | "intercom"
+  provider: string
   status: SyncStatus
   lastSyncTime: string | null
   version: number
@@ -59,11 +59,12 @@ export type UserStatus = "active" | "suspended"
 
 export interface User {
   id: string
-  name: string
-  email: string
-  phone: string
-  role: string
-  status: UserStatus
+  name?: string
+  provider?: string
+  email?: string
+  phone?: string
+  role?: string
+  status?: UserStatus
   created_at: string
   updated_at: string
 }

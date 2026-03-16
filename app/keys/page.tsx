@@ -23,8 +23,8 @@ export default function KeysPage() {
 
   const filteredKeys = useMemo(() => {
     return keys.filter((key) =>
-      key.key_type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      key.id.toLowerCase().includes(searchQuery.toLowerCase())
+      key?.key_type?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      key?.id?.toLowerCase().includes(searchQuery.toLowerCase())
     )
   }, [keys, searchQuery])
 

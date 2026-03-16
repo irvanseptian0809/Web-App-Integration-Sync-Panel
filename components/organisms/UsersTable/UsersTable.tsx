@@ -1,10 +1,9 @@
-import { Edit2, MoreVertical, Trash2 } from "lucide-react"
-import React, { useState } from "react"
+import { Edit2, Trash2 } from "lucide-react"
+import React from "react"
 
 import { Badge } from "@/components/atoms/Badge"
 import { Button } from "@/components/atoms/Button"
 import { User } from "@/interface/types"
-import { cn } from "@/utils/cn"
 
 interface UsersTableProps {
   users: User[]
@@ -13,7 +12,6 @@ interface UsersTableProps {
 }
 
 export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
-  const [activeMenu, setActiveMenu] = useState<string | null>(null)
 
   return (
     <div className="w-full overflow-hidden bg-white border border-slate-200 rounded-xl shadow-sm">
@@ -23,6 +21,9 @@ export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
             <tr className="bg-slate-50/50 border-b border-slate-100">
               <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
                 User
+              </th>
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                Integration
               </th>
               <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
                 Role
@@ -39,8 +40,8 @@ export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
           <tbody className="divide-y divide-slate-100">
             {users.length > 0 ? (
               users.map((user) => (
-                <tr 
-                  key={user.id} 
+                <tr
+                  key={user.id}
                   className="hover:bg-slate-50/50 transition-colors group cursor-pointer"
                   onClick={() => window.location.href = `/users/${user.id}`}
                 >
@@ -49,6 +50,9 @@ export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
                       <span className="font-semibold text-slate-900">{user.name}</span>
                       <span className="text-xs text-slate-500">{user.email}</span>
                     </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="text-sm text-slate-600">{user?.provider || '-'}</span>
                   </td>
                   <td className="px-6 py-4">
                     <span className="text-sm text-slate-600">{user.role}</span>
@@ -66,20 +70,18 @@ export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
                   <td className="px-6 py-4 text-right relative" onClick={(e) => e.stopPropagation()}>
                     <div className="flex justify-end items-center gap-2">
                       <Button
-                        variant="ghost"
+                        variant="default"
                         size="icon"
                         onClick={() => onEdit(user)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        <Edit2 className="w-4 h-4 text-slate-400 hover:text-blue-600" />
+                        <Edit2 className="w-4 h-4 text-white" />
                       </Button>
                       <Button
-                        variant="ghost"
+                        variant="destructive"
                         size="icon"
                         onClick={() => onDelete(user.id)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        <Trash2 className="w-4 h-4 text-slate-400 hover:text-red-600" />
+                        <Trash2 className="w-4 h-4 text-white" />
                       </Button>
                     </div>
                   </td>
