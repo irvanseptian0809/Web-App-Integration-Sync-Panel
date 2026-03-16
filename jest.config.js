@@ -18,13 +18,14 @@ const config = {
       },
     ],
   },
-  testPathIgnorePatterns: ["/node_modules/", "/.next/"],
-  testMatch: ["**/*.test.[jt]s?(x)"],
+  testMatch: ["**/__tests__/**/*.[jt]s?(x)", "**/*.test.[jt]s?(x)"],
   collectCoverageFrom: [
     "components/**/*.tsx",
     "!components/**/*.stories.tsx",
     "!components/**/*.test.tsx",
     "!components/**/index.ts",
+    "stores/**/*.ts",
+    "!stores/**/*.test.ts",
   ],
   coverageThreshold: {
     global: {

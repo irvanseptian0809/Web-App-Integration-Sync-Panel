@@ -14,7 +14,22 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <span className="font-bold tracking-tight text-lg">portier sync</span>
           </Link>
 
-          <div className="flex items-center gap-4">
+          <nav className="hidden md:flex items-center gap-6 ml-10">
+            <Link href="/" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">
+              Integrations
+            </Link>
+            <Link href="/users" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">
+              Users
+            </Link>
+            <Link href="/doors" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">
+              Doors
+            </Link>
+            <Link href="/keys" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">
+              Keys
+            </Link>
+          </nav>
+
+          <div className="flex items-center gap-4 ml-auto">
             <div className="w-8 h-8 rounded-full bg-slate-200 border border-slate-300 overflow-hidden">
               <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" alt="User" />
             </div>
