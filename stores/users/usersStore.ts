@@ -1,15 +1,6 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import { User } from "@/interface/types"
-
-interface UserState {
-  users: User[]
-  addUser: (user: User) => void
-  updateUser: (user: User) => void
-  removeUser: (userId: string) => void
-  removeUsersByProvider: (provider: string) => void
-  setUsers: (users: User[]) => void
-}
+import { UserState } from "./interface"
 
 export const useUserStore = create<UserState>()(
   persist(

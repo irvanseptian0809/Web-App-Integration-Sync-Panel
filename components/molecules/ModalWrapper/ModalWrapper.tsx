@@ -48,7 +48,13 @@ export function ModalWrapper({
         <div className="flex flex-col space-y-1.5 p-6 border-b border-slate-100">
           <div className="flex items-center justify-between">
             <TypographyH3 className="text-xl">{title}</TypographyH3>
-            <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0 -mr-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              aria-label="Close"
+              className="shrink-0 -mr-2"
+            >
               <X className="w-5 h-5" />
             </Button>
           </div>

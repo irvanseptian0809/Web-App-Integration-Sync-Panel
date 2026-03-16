@@ -58,7 +58,7 @@ export interface ResolutionHistoryEntry {
 export type UserStatus = "active" | "suspended"
 
 export interface User {
-  id: string
+  id?: string
   name?: string
   provider?: string
   email?: string
@@ -72,7 +72,7 @@ export interface User {
 export type DoorStatus = "online" | "offline"
 
 export interface Door {
-  id: string
+  id?: string
   name: string
   location: string
   device_id: string
@@ -86,7 +86,7 @@ export interface Door {
 export type KeyStatus = "active" | "revoked"
 
 export interface Key {
-  id: string
+  id?: string
   user_id: string
   door_id: string
   key_type: string

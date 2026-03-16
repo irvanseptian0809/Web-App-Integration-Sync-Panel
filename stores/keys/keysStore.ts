@@ -1,15 +1,6 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import { Key } from "@/interface/types"
-
-interface KeyState {
-  keys: Key[]
-  addKey: (key: Key) => void
-  updateKey: (key: Key) => void
-  removeKey: (keyId: string) => void
-  removeKeysByProvider: (provider: string) => void
-  setKeys: (keys: Key[]) => void
-}
+import { KeyState } from "./interface"
 
 export const useKeyStore = create<KeyState>()(
   persist(

@@ -85,20 +85,12 @@ export default function DoorDetailPage() {
               <TypographyH3 className="mb-6">Hardware Configuration</TypographyH3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex justify-between items-center p-4 border border-slate-100 rounded-xl">
-                  <span className="text-sm text-slate-500">Device Model</span>
+                  <span className="text-sm text-slate-500">Device Id</span>
                   <span className="text-sm font-semibold text-slate-900">Portier X-100</span>
                 </div>
                 <div className="flex justify-between items-center p-4 border border-slate-100 rounded-xl">
                   <span className="text-sm text-slate-500">Serial Number</span>
                   <span className="text-sm font-mono font-semibold text-slate-900 uppercase">{door.device_id}</span>
-                </div>
-                <div className="flex justify-between items-center p-4 border border-slate-100 rounded-xl">
-                  <span className="text-sm text-slate-500">Firmware</span>
-                  <span className="text-sm font-semibold text-slate-900">v2.4.1</span>
-                </div>
-                <div className="flex justify-between items-center p-4 border border-slate-100 rounded-xl">
-                  <span className="text-sm text-slate-500">Encryption</span>
-                  <span className="text-sm font-semibold text-slate-900 text-green-600">AES-256</span>
                 </div>
               </div>
             </div>
@@ -114,7 +106,6 @@ export default function DoorDetailPage() {
               </div>
               <div>
                 <span className="text-sm font-bold text-blue-900 block">{door.location}</span>
-                <span className="text-xs text-blue-700">Campus North Wing 4</span>
               </div>
             </div>
           </div>

@@ -1,21 +1,5 @@
 import { create } from "zustand"
-
-export type NotificationsType = "success" | "error" | "info" | "warning"
-
-export interface NotificationsState {
-  isOpen: boolean
-  type: NotificationsType
-  title: string
-  message: string
-  code?: string
-  showNotification: (params: {
-    type: NotificationsType
-    title: string
-    message: string
-    code?: string
-  }) => void
-  hideNotification: () => void
-}
+import { NotificationsState } from "./interface"
 
 export const useNotificationsStore = create<NotificationsState>((set) => ({
   isOpen: false,

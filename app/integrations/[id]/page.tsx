@@ -2,14 +2,13 @@
 
 import { useMutation } from "@tanstack/react-query"
 import { RefreshCw, Trash2 } from "lucide-react"
-import { AlertCircle, CalendarSync, Clock, Database } from "lucide-react"
+import { AlertCircle, CalendarSync, Database } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import React, { useState } from "react"
 
 import { Badge } from "@/components/atoms/Badge"
 import { Button } from "@/components/atoms/Button"
 import { TypographyH3, TypographyMuted } from "@/components/atoms/Typography"
-import { DataRow } from "@/components/molecules/DataRow"
 import { StatusIndicator } from "@/components/molecules/StatusIndicator"
 import { RemoveConfirmModal } from "@/components/organisms/RemoveConfirmModal"
 import { ResolutionHistoryTable } from "@/components/organisms/ResolutionHistoryTable"
@@ -17,7 +16,10 @@ import { ReviewChangesModal } from "@/components/organisms/ReviewChangesModal"
 import { SyncDetailTemplate } from "@/components/templates/SyncDetailTemplate"
 import { syncApi } from "@/services/syncApi"
 import { useIntegrationStore } from "@/stores/integrations/integrationsStore"
+import { useUserStore } from "@/stores/users/usersStore"
+import { useKeyStore } from "@/stores/keys/keysStore"
 import { useNotificationsStore } from "@/stores/notifications/notificationsStore"
+import { User, Key } from "@/interface/types"
 
 export default function IntegrationDetailPage() {
   const router = useRouter()
@@ -27,7 +29,6 @@ export default function IntegrationDetailPage() {
 
   const integrations = useIntegrationStore((state) => state.integrations)
   const integration = integrations.find((i) => i.id === integrationId)
-  const localData = []
 
   const pendingChanges = useIntegrationStore((state) => state.pendingChanges[integrationId]) || []
   const conflictHistory = useIntegrationStore((state) => state.conflictHistory[integrationId]) || []
@@ -48,7 +49,6 @@ export default function IntegrationDetailPage() {
       }
     },
     onSuccess: (response) => {
-      // Load changes from API into the Zustand store for preview & conflict resolution
       if (
         response?.data?.sync_approval?.changes &&
         response.data.sync_approval.changes.length > 0
@@ -118,21 +118,24 @@ export default function IntegrationDetailPage() {
     </div>
   )
 
+  const users = useUserStore((state) => state.users)
+  const keys = useKeyStore((state) => state.keys)
+
+  const providerUsersCount = users.filter((u: User) => u.provider === integration.provider).length
+  const providerKeysCount = keys.filter((k: Key) => k.provider === integration.provider).length
+
+  const totalFieldChanges = conflictHistory.reduce((acc, entry) => acc + (entry.fields?.length || 0), 0)
+
   return (
     <SyncDetailTemplate integration={integration} action={headerAction}>
-      {/* 3 Metric Grid Card */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-8">
         <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
           <TypographyMuted className="flex items-center gap-2 mb-2">
             <Database className="w-4 h-4" /> Total Records
           </TypographyMuted>
-          <div className="text-3xl font-bold text-slate-900">4,567</div>
-        </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-          <TypographyMuted className="flex items-center gap-2 mb-2">
-            <Clock className="w-4 h-4" /> Last Sync Duration
-          </TypographyMuted>
-          <div className="text-3xl font-bold text-slate-900">22s</div>
+          <div className="text-3xl font-bold text-slate-900">
+            {totalFieldChanges.toLocaleString()}
+          </div>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
           <TypographyMuted className="flex items-center gap-2 mb-2">
@@ -154,33 +157,42 @@ export default function IntegrationDetailPage() {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Left Column: Sync Summary & Local Data */}
-        <div className="flex-1 space-y-8">
-          {/* Figma Reference: Main Sync Summary Card */}
-          <div className="bg-white border border-slate-200 rounded-xl p-8 shadow-sm">
-            <TypographyH3 className="text-xl mb-6">Sync Summary</TypographyH3>
+      <div className="flex flex-col gap-8">
+        {/* Sync Summary Card - Redesigned for Efficiency */}
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+          <div className="flex items-center justify-between mb-6">
+            <TypographyH3 className="text-lg">Sync Summary</TypographyH3>
+            <Badge variant="outline" className="bg-slate-50 text-slate-500 border-slate-200 font-medium text-[10px] uppercase tracking-wider">
+              Provider: {integration.provider}
+            </Badge>
+          </div>
 
-            <div className="border border-slate-100 rounded-xl overflow-hidden divide-y divide-slate-100 mb-8">
-              <div className="flex justify-between items-center px-5 py-4 hover:bg-slate-50/50">
-                <span className="text-sm font-medium text-slate-500">Integration Name</span>
-                <span className="text-sm font-semibold text-slate-900">{integration.name}</span>
-              </div>
-              <div className="flex justify-between items-center px-5 py-4 hover:bg-slate-50/50">
-                <span className="text-sm font-medium text-slate-500">Current Status</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-8">
+            <div className="space-y-1">
+              <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Status</span>
+              <div className="flex items-center">
                 <StatusIndicator status={integration.status} />
               </div>
-              <div className="flex justify-between items-center px-5 py-4 hover:bg-slate-50/50">
-                <span className="text-sm font-medium text-slate-500">Current Version</span>
-                <span className="text-sm font-semibold text-slate-900">v{integration.version}</span>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Version</span>
+              <div className="text-sm font-semibold text-slate-900">v{integration.version}</div>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Associated Users</span>
+              <div className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-blue-500" />
+                {providerUsersCount} Users
               </div>
-              <div className="flex justify-between items-center px-5 py-4 hover:bg-slate-50/50">
-                <span className="text-sm font-medium text-slate-500">Last Sync</span>
-                <span className="text-sm font-semibold text-slate-900">
-                  {integration.lastSyncTime
-                    ? new Date(integration.lastSyncTime).toLocaleString()
-                    : "Never"}
-                </span>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Associated Keys</span>
+              <div className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                {providerKeysCount} Keys
               </div>
             </div>
           </div>

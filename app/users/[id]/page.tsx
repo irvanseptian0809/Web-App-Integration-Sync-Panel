@@ -1,21 +1,23 @@
 "use client"
 
-import { useParams, useRouter } from "next/navigation"
-import { ArrowLeft, Mail, Phone, Calendar, User as UserIcon, Shield } from "lucide-react"
 import React from "react"
+import { useParams, useRouter } from "next/navigation"
+import { useShallow } from "zustand/react/shallow"
+import { ArrowLeft, Mail, Phone, Calendar, User as UserIcon, Shield } from "lucide-react"
 
 import { Badge } from "@/components/atoms/Badge"
 import { Button } from "@/components/atoms/Button"
 import { TypographyH2, TypographyH3, TypographyMuted, TypographyP } from "@/components/atoms/Typography"
 import { DashboardLayout } from "@/components/layouts/DashboardLayout"
 import { useUserStore } from "@/stores/users/usersStore"
-import { DataRow } from "@/components/molecules/DataRow"
+import { useKeyStore } from "@/stores/keys/keysStore"
 
 export default function UserDetailPage() {
   const params = useParams()
   const router = useRouter()
   const userId = params.id as string
   const user = useUserStore((state) => state.users.find((u) => u.id === userId))
+  const userKeys = useKeyStore(useShallow((state) => state.keys.filter((k) => k.user_id === userId)))
 
   if (!user) {
     return (
@@ -41,11 +43,11 @@ export default function UserDetailPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-2xl bg-blue-600 flex items-center justify-center text-white text-2xl font-bold">
-              {user.name.charAt(0)}
+              {user.name ? user.name.charAt(0) : <UserIcon className="w-8 h-8" />}
             </div>
             <div>
               <div className="flex items-center gap-3">
-                <TypographyH2>{user.name}</TypographyH2>
+                <TypographyH2>{user.name || "Unnamed User"}</TypographyH2>
                 <Badge variant={user.status === "active" ? "success" : "warning"}>
                   {user.status}
                 </Badge>
@@ -70,7 +72,7 @@ export default function UserDetailPage() {
                   </div>
                   <div>
                     <span className="text-xs text-slate-500 block uppercase font-semibold">Email Address</span>
-                    <span className="text-slate-900 font-medium">{user.email}</span>
+                    <span className="text-slate-900 font-medium">{user.email || "—"}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -90,7 +92,9 @@ export default function UserDetailPage() {
                   </div>
                   <div>
                     <span className="text-xs text-slate-500 block uppercase font-semibold">Created At</span>
-                    <span className="text-slate-900 font-medium">{new Date(user.created_at).toLocaleString()}</span>
+                    <span className="text-slate-900 font-medium">
+                      {user.created_at ? new Date(user.created_at).toLocaleString() : "—"}
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -99,7 +103,9 @@ export default function UserDetailPage() {
                   </div>
                   <div>
                     <span className="text-xs text-slate-500 block uppercase font-semibold">Last Updated</span>
-                    <span className="text-slate-900 font-medium">{new Date(user.updated_at).toLocaleString()}</span>
+                    <span className="text-slate-900 font-medium">
+                      {user.updated_at ? new Date(user.updated_at).toLocaleString() : "—"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -113,11 +119,7 @@ export default function UserDetailPage() {
             <div className="space-y-4">
               <div className="p-4 bg-slate-50 rounded-lg flex items-center justify-between">
                 <span className="text-sm text-slate-500">Total Keys Issued</span>
-                <span className="text-lg font-bold text-slate-900">0</span>
-              </div>
-              <div className="p-4 bg-slate-50 rounded-lg flex items-center justify-between">
-                <span className="text-sm text-slate-500">Active Sessions</span>
-                <span className="text-lg font-bold text-slate-900">0</span>
+                <span className="text-lg font-bold text-slate-900">{userKeys.length}</span>
               </div>
             </div>
           </div>

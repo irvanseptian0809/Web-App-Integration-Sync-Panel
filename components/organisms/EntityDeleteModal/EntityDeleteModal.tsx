@@ -4,15 +4,7 @@ import { AlertTriangle } from "lucide-react"
 import { Button } from "@/components/atoms/Button"
 import { TypographyP } from "@/components/atoms/Typography"
 import { ModalWrapper } from "@/components/molecules/ModalWrapper"
-
-interface EntityDeleteModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onConfirm: () => void
-  entityName: string
-  entityType: string
-  isDeleting?: boolean
-}
+import { EntityDeleteModalProps } from "./interface"
 
 export function EntityDeleteModal({
   isOpen,

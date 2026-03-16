@@ -1,6 +1,6 @@
 "use client"
 
-import { Plus, Search, Key as KeyIcon } from "lucide-react"
+import { Plus, Search } from "lucide-react"
 import React, { useMemo, useState } from "react"
 import { v4 as uuidv4 } from "uuid"
 
@@ -24,7 +24,7 @@ export default function KeysPage() {
   const filteredKeys = useMemo(() => {
     return keys.filter((key) =>
       key?.key_type?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      key?.id?.toLowerCase().includes(searchQuery.toLowerCase())
+      (key?.id && key.id.toLowerCase().includes(searchQuery.toLowerCase()))
     )
   }, [keys, searchQuery])
 
@@ -128,7 +128,7 @@ export default function KeysPage() {
         isOpen={!!deletingKeyId}
         onClose={() => setDeletingKeyId(null)}
         onConfirm={handleDeleteKey}
-        entityName={`Key ${deletingKeyId?.slice(0, 8)}`}
+        entityName={`Key ${deletingKeyId ? deletingKeyId.slice(0, 8) : "New"}`}
         entityType="Key"
       />
     </DashboardLayout>

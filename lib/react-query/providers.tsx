@@ -14,7 +14,7 @@ export function Providers({ children }: { children: ReactNode }) {
   }, [])
 
   if (!mounted) {
-    return null // Prevents server-side rendering of the application tree
+    return null
   }
 
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>

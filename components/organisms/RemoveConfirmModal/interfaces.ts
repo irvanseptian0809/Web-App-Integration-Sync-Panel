@@ -6,3 +6,10 @@ export interface RemoveConfirmModalProps {
   onClose: () => void
   onSuccess?: () => void
 }
+
+export interface BulkRemoveConfirmModalProps {
+  integrations: Integration[]
+  isOpen: boolean
+  onClose: () => void
+  onConfirm: () => void
+}

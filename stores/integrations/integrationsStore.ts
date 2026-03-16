@@ -1,78 +1,15 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
-import { Integration, ResolutionHistoryEntry, SyncChange } from "@/interface/types"
+import { IntegrationState } from "./interface"
 
-interface SyncState {
-  activeIntegration: Integration | null
-  setActiveIntegration: (integration: Integration | null) => void
-
-  // Dynamic User Integrations
-  integrations: Integration[]
-  addIntegration: (integration: Integration) => void
-  removeIntegration: (integrationId: string) => void
-  bumpIntegrationVersion: (integrationId: string) => void
-  setIntegrationStatus: (integrationId: string, status: Integration["status"]) => void
-
-  // Conflict resolution state keyed by integrationId
-  pendingChanges: Record<string, SyncChange[]>
-  setPendingChanges: (integrationId: string, changes: SyncChange[]) => void
-
-  // Record of resolved fields (key: integrationId -> field_name -> 'local' | changeId)
-  resolutions: Record<string, Record<string, "local" | string>>
-  setResolution: (integrationId: string, fieldName: string, choice: "local" | string) => void
-
-  clearResolutions: (integrationId: string) => void
-
-  // Conflict resolution history keyed by integrationId
-  conflictHistory: Record<string, ResolutionHistoryEntry[]>
-  recordResolution: (entry: ResolutionHistoryEntry) => void
-}
-
-export const useIntegrationStore = create<SyncState>()(
+export const useIntegrationStore = create<IntegrationState>()(
   persist(
     (set) => ({
       activeIntegration: null,
       setActiveIntegration: (integration) => set({ activeIntegration: integration }),
 
-      integrations: [
-        {
-          id: "int_1",
-          name: "Salesforce CRM",
-          provider: "salesforce",
-          status: "synced",
-          lastSyncTime: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-          version: 42,
-          logo: "https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg",
-        },
-        {
-          id: "int_2",
-          name: "HubSpot Marketing",
-          provider: "hubspot",
-          status: "conflict",
-          lastSyncTime: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-          version: 18,
-          logo: "https://upload.wikimedia.org/wikipedia/commons/e/ee/HubSpot_Logo.png",
-        },
-        {
-          id: "int_3",
-          name: "Slack Notifications",
-          provider: "slack",
-          status: "error",
-          lastSyncTime: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-          version: 7,
-          logo: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Slack_icon_2019.svg",
-        },
-        {
-          id: "int_4",
-          name: "Stripe Billing",
-          provider: "stripe",
-          status: "syncing",
-          lastSyncTime: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-          version: 112,
-          logo: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg",
-        },
-      ],
+      integrations: [],
       addIntegration: (integration) =>
         set((state) => ({ integrations: [...state.integrations, integration] })),
       removeIntegration: (integrationId) =>

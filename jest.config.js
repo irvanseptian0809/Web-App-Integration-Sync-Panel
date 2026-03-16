@@ -20,6 +20,7 @@ const config = {
   },
   testMatch: ["**/__tests__/**/*.[jt]s?(x)", "**/*.test.[jt]s?(x)"],
   collectCoverageFrom: [
+    "app/users/[id]/page.tsx",
     "components/**/*.tsx",
     "!components/**/*.stories.tsx",
     "!components/**/*.test.tsx",
