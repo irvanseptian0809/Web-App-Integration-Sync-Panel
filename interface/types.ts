@@ -80,6 +80,7 @@ export interface Door {
   battery_level: number
   last_seen: string
   created_at: string
+  provider?: string
 }
 
 export type KeyStatus = "active" | "revoked"
@@ -93,4 +94,5 @@ export interface Key {
   access_end: string
   status: KeyStatus
   created_at: string
+  provider?: string
 }

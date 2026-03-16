@@ -14,6 +14,9 @@ import { Integration } from "@/interface/types"
 import { syncApi } from "@/services/syncApi"
 import { useIntegrationStore } from "@/stores/integrations/integrationsStore"
 import { useNotificationsStore } from "@/stores/notifications/notificationsStore"
+import { useUserStore } from "@/stores/users/usersStore"
+import { useDoorStore } from "@/stores/doors/doorsStore"
+import { useKeyStore } from "@/stores/keys/keysStore"
 
 import { IntegrationsTableProps } from "./interfaces"
 
@@ -21,6 +24,10 @@ export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
   const pendingChangesMap = useIntegrationStore((state) => state.pendingChanges)
   const setPendingChanges = useIntegrationStore((state) => state.setPendingChanges)
   const setIntegrationStatus = useIntegrationStore((state) => state.setIntegrationStatus)
+  const removeIntegration = useIntegrationStore((state) => state.removeIntegration)
+  const removeUsersByProvider = useUserStore((state) => state.removeUsersByProvider)
+  const removeDoorsByProvider = useDoorStore((state) => state.removeDoorsByProvider)
+  const removeKeysByProvider = useKeyStore((state) => state.removeKeysByProvider)
   const showNotification = useNotificationsStore((state) => state.showNotification)
 
   const [reviewModalOpenFor, setReviewModalOpenFor] = useState<Integration | null>(null)
@@ -114,6 +121,25 @@ export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
     toSync.forEach((integration) => handleSync({ integration }))
   }, [integrations, selectedIds, handleSync])
 
+  const handleBulkRemove = useCallback(() => {
+    const toRemove = integrations.filter((i) => selectedIds.has(i.id))
+    if (toRemove.length === 0) return
+
+    toRemove.forEach((integration) => {
+      removeUsersByProvider(integration.provider)
+      removeDoorsByProvider(integration.provider)
+      removeKeysByProvider(integration.provider)
+      removeIntegration(integration.id)
+    })
+
+    setSelectedIds(new Set())
+    showNotification({
+      type: "success",
+      title: "Integrations Removed",
+      message: `Successfully removed ${toRemove.length} integrations and their associated data.`,
+    })
+  }, [integrations, selectedIds, removeUsersByProvider, removeDoorsByProvider, removeKeysByProvider, removeIntegration, showNotification])
+
   const selectedCount = selectedIds.size
 
   return (
@@ -135,6 +161,15 @@ export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
               className="text-slate-500 hover:text-slate-700"
             >
               Clear selection
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={handleBulkRemove}
+              className="mr-2"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Remove {selectedCount}
             </Button>
             <Button
               size="sm"

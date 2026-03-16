@@ -54,6 +54,7 @@ export function AddIntegrationModal({ isOpen, onClose }: AddIntegrationModalProp
       const keysMap: Record<string, any> = {
         id: `key_${Date.now()}`,
         user_id: userId,
+        provider,
         status: "active",
         created_at: new Date().toISOString(),
         access_start: new Date().toISOString(),

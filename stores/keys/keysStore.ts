@@ -7,6 +7,7 @@ interface KeyState {
   addKey: (key: Key) => void
   updateKey: (key: Key) => void
   removeKey: (keyId: string) => void
+  removeKeysByProvider: (provider: string) => void
   setKeys: (keys: Key[]) => void
 }
 
@@ -43,6 +44,10 @@ export const useKeyStore = create<KeyState>()(
       removeKey: (keyId) =>
         set((state) => ({
           keys: state.keys.filter((k) => k.id !== keyId),
+        })),
+      removeKeysByProvider: (provider) =>
+        set((state) => ({
+          keys: state.keys.filter((k) => k.provider !== provider),
         })),
       setKeys: (keys) => set({ keys }),
     }),

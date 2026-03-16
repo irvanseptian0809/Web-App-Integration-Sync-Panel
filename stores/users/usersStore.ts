@@ -7,6 +7,7 @@ interface UserState {
   addUser: (user: User) => void
   updateUser: (user: User) => void
   removeUser: (userId: string) => void
+  removeUsersByProvider: (provider: string) => void
   setUsers: (users: User[]) => void
 }
 
@@ -43,6 +44,10 @@ export const useUserStore = create<UserState>()(
       removeUser: (userId) =>
         set((state) => ({
           users: state.users.filter((u) => u.id !== userId),
+        })),
+      removeUsersByProvider: (provider) =>
+        set((state) => ({
+          users: state.users.filter((u) => u.provider !== provider),
         })),
       setUsers: (users) => set({ users }),
     }),

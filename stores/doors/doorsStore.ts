@@ -7,6 +7,7 @@ interface DoorState {
   addDoor: (door: Door) => void
   updateDoor: (door: Door) => void
   removeDoor: (doorId: string) => void
+  removeDoorsByProvider: (provider: string) => void
   setDoors: (doors: Door[]) => void
 }
 
@@ -43,6 +44,10 @@ export const useDoorStore = create<DoorState>()(
       removeDoor: (doorId) =>
         set((state) => ({
           doors: state.doors.filter((d) => d.id !== doorId),
+        })),
+      removeDoorsByProvider: (provider) =>
+        set((state) => ({
+          doors: state.doors.filter((d) => d.provider !== provider),
         })),
       setDoors: (doors) => set({ doors }),
     }),

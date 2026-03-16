@@ -7,6 +7,9 @@ import { Button } from "@/components/atoms/Button"
 import { Input } from "@/components/atoms/Input"
 import { ModalWrapper } from "@/components/molecules/ModalWrapper"
 import { useIntegrationStore } from "@/stores/integrations/integrationsStore"
+import { useUserStore } from "@/stores/users/usersStore"
+import { useDoorStore } from "@/stores/doors/doorsStore"
+import { useKeyStore } from "@/stores/keys/keysStore"
 import { cn } from "@/utils/cn"
 
 import { RemoveConfirmModalProps } from "./interfaces"
@@ -20,12 +23,18 @@ export function RemoveConfirmModal({
   const [isDeleting, setIsDeleting] = useState(false)
   const [confirmText, setConfirmText] = useState("")
   const removeIntegration = useIntegrationStore((state) => state.removeIntegration)
+  const removeUsersByProvider = useUserStore((state) => state.removeUsersByProvider)
+  const removeDoorsByProvider = useDoorStore((state) => state.removeDoorsByProvider)
+  const removeKeysByProvider = useKeyStore((state) => state.removeKeysByProvider)
 
   const handleConfirm = () => {
     setIsDeleting(true)
 
     // Simulate API deletion delay for UX
     setTimeout(() => {
+      removeUsersByProvider(integration.provider)
+      removeDoorsByProvider(integration.provider)
+      removeKeysByProvider(integration.provider)
       removeIntegration(integration.id)
       setIsDeleting(false)
       setConfirmText("")
