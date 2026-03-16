@@ -57,4 +57,3 @@ npm run storybook
 
 - [Features & Overview](FEATURES.md)
 - [Design Decisions](DESIGN_DECISIONS.md)
-- [Project Inventory & Analysis](.gemini/antigravity/brain/901716ca-f17a-44f6-9f94-fb2398e99ffd/analysis_results.md)
