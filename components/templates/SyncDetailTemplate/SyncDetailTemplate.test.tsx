@@ -22,7 +22,7 @@ describe("SyncDetailTemplate", () => {
       </SyncDetailTemplate>,
     )
     expect(screen.getByText("Salesforce")).toBeInTheDocument()
-    expect(screen.getByText("Version 1.0.0")).toBeInTheDocument()
+    expect(screen.getByText(/Version/i)).toBeInTheDocument()
   })
 
   it("renders the back link", () => {

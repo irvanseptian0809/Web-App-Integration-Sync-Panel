@@ -13,8 +13,8 @@ let mockStore = {
   hideNotification: mockHideNotification,
 }
 
-jest.mock("@/stores/notificationStore", () => ({
-  useNotificationStore: (selector?: (s: typeof mockStore) => unknown) => 
+jest.mock("@/stores/notifications/notificationsStore", () => ({
+  useNotificationsStore: (selector?: (s: typeof mockStore) => unknown) =>
     selector ? selector(mockStore) : mockStore,
 }))
 

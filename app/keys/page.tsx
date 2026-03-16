@@ -11,7 +11,7 @@ import { ModalWrapper } from "@/components/molecules/ModalWrapper"
 import { EntityDeleteModal } from "@/components/organisms/EntityDeleteModal/EntityDeleteModal"
 import { KeyForm } from "@/components/organisms/KeyForm/KeyForm"
 import { KeysTable } from "@/components/organisms/KeysTable/KeysTable"
-import { useKeyStore } from "@/stores/keyStore"
+import { useKeyStore } from "@/stores/keys/keysStore"
 import { Key } from "@/interface/types"
 
 export default function KeysPage() {
@@ -91,10 +91,10 @@ export default function KeysPage() {
         </div>
       </div>
 
-      <KeysTable 
-        keysList={filteredKeys} 
-        onEdit={setEditingKey} 
-        onDelete={setDeletingKeyId} 
+      <KeysTable
+        keysList={filteredKeys}
+        onEdit={setEditingKey}
+        onDelete={setDeletingKeyId}
       />
 
       {/* Issue Key Modal */}
@@ -115,10 +115,10 @@ export default function KeysPage() {
         description="Update access period or status for this key."
       >
         {editingKey && (
-          <KeyForm 
-            initialData={editingKey} 
-            onSubmit={handleUpdateKey} 
-            onCancel={() => setEditingKey(null)} 
+          <KeyForm
+            initialData={editingKey}
+            onSubmit={handleUpdateKey}
+            onCancel={() => setEditingKey(null)}
           />
         )}
       </ModalWrapper>

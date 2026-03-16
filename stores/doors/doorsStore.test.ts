@@ -1,4 +1,4 @@
-import { useDoorStore } from "./doorStore"
+import { useDoorStore } from "./doorsStore"
 import { Door } from "@/interface/types"
 
 describe("doorStore", () => {

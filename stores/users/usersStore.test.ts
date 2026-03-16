@@ -1,4 +1,4 @@
-import { useUserStore } from "./userStore"
+import { useUserStore } from "./usersStore"
 import { User } from "@/interface/types"
 
 describe("userStore", () => {

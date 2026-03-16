@@ -1,4 +1,4 @@
-import { useKeyStore } from "./keyStore"
+import { useKeyStore } from "./keysStore"
 import { Key } from "@/interface/types"
 
 describe("keyStore", () => {

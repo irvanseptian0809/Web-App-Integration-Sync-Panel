@@ -4,8 +4,8 @@ import React from "react"
 import { Badge } from "@/components/atoms/Badge"
 import { Button } from "@/components/atoms/Button"
 import { Key } from "@/interface/types"
-import { useUserStore } from "@/stores/userStore"
-import { useDoorStore } from "@/stores/doorStore"
+import { useUserStore } from "@/stores/users/usersStore"
+import { useDoorStore } from "@/stores/doors/doorsStore"
 import { cn } from "@/utils/cn"
 
 interface KeysTableProps {
@@ -48,8 +48,8 @@ export function KeysTable({ keysList, onEdit, onDelete }: KeysTableProps) {
           <tbody className="divide-y divide-slate-100">
             {keysList.length > 0 ? (
               keysList.map((key) => (
-                <tr 
-                  key={key.id} 
+                <tr
+                  key={key.id}
                   className="hover:bg-slate-50/50 transition-colors group cursor-pointer"
                   onClick={() => window.location.href = `/keys/${key.id}`}
                 >

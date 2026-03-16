@@ -1,15 +1,15 @@
 import { create } from "zustand"
 
-export type NotificationType = "success" | "error" | "info" | "warning"
+export type NotificationsType = "success" | "error" | "info" | "warning"
 
-export interface NotificationState {
+export interface NotificationsState {
   isOpen: boolean
-  type: NotificationType
+  type: NotificationsType
   title: string
   message: string
   code?: string
   showNotification: (params: {
-    type: NotificationType
+    type: NotificationsType
     title: string
     message: string
     code?: string
@@ -17,7 +17,7 @@ export interface NotificationState {
   hideNotification: () => void
 }
 
-export const useNotificationStore = create<NotificationState>((set) => ({
+export const useNotificationsStore = create<NotificationsState>((set) => ({
   isOpen: false,
   type: "info",
   title: "",

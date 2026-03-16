@@ -2,8 +2,8 @@ import React, { useState } from "react"
 import { Key, KeyStatus } from "@/interface/types"
 import { Button } from "@/components/atoms/Button"
 import { Input } from "@/components/atoms/Input"
-import { useUserStore } from "@/stores/userStore"
-import { useDoorStore } from "@/stores/doorStore"
+import { useUserStore } from "@/stores/users/usersStore"
+import { useDoorStore } from "@/stores/doors/doorsStore"
 
 interface KeyFormProps {
   initialData?: Partial<Key>
@@ -40,8 +40,9 @@ export function KeyForm({ initialData, onSubmit, onCancel, isSubmitting }: KeyFo
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Assign User</label>
+          <label htmlFor="key-user" className="block text-sm font-medium text-slate-700 mb-1">Assign User</label>
           <select
+            id="key-user"
             name="user_id"
             value={formData.user_id}
             onChange={handleChange}
@@ -55,8 +56,9 @@ export function KeyForm({ initialData, onSubmit, onCancel, isSubmitting }: KeyFo
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Target Door</label>
+          <label htmlFor="key-door" className="block text-sm font-medium text-slate-700 mb-1">Target Door</label>
           <select
+            id="key-door"
             name="door_id"
             value={formData.door_id}
             onChange={handleChange}
@@ -70,8 +72,9 @@ export function KeyForm({ initialData, onSubmit, onCancel, isSubmitting }: KeyFo
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Key Type</label>
+          <label htmlFor="key-type" className="block text-sm font-medium text-slate-700 mb-1">Key Type</label>
           <Input
+            id="key-type"
             name="key_type"
             value={formData.key_type}
             onChange={handleChange}
@@ -81,8 +84,9 @@ export function KeyForm({ initialData, onSubmit, onCancel, isSubmitting }: KeyFo
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Access Start</label>
+            <label htmlFor="key-start" className="block text-sm font-medium text-slate-700 mb-1">Access Start</label>
             <Input
+              id="key-start"
               type="date"
               name="access_start"
               value={formData.access_start?.split("T")[0]}
@@ -91,8 +95,9 @@ export function KeyForm({ initialData, onSubmit, onCancel, isSubmitting }: KeyFo
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Access End</label>
+            <label htmlFor="key-end" className="block text-sm font-medium text-slate-700 mb-1">Access End</label>
             <Input
+              id="key-end"
               type="date"
               name="access_end"
               value={formData.access_end?.split("T")[0]}
@@ -102,8 +107,9 @@ export function KeyForm({ initialData, onSubmit, onCancel, isSubmitting }: KeyFo
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>
+          <label htmlFor="key-status" className="block text-sm font-medium text-slate-700 mb-1">Status</label>
           <select
+            id="key-status"
             name="status"
             value={formData.status}
             onChange={handleChange}

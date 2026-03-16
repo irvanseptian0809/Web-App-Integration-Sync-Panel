@@ -3,10 +3,10 @@ import React from "react"
 import { render, screen, fireEvent } from "@testing-library/react"
 import { ReviewChangesModal } from "./ReviewChangesModal"
 import { Integration, SyncChange } from "@/interface/types"
-import { useIntegrationStore } from "@/stores/integrationStore"
+import { useIntegrationStore } from "@/stores/integrations/integrationsStore"
 
 // ── Mocks ───────────────────────────────────────────────────────────────────
-jest.mock("@/stores/integrationStore", () => ({
+jest.mock("@/stores/integrations/integrationsStore", () => ({
   useIntegrationStore: jest.fn(),
 }))
 
@@ -57,7 +57,7 @@ const mockIntegration: Integration = {
 describe("ReviewChangesModal", () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    ;(useIntegrationStore as unknown as jest.Mock).mockImplementation((selector: any) => selector(defaultStore))
+      ; (useIntegrationStore as unknown as jest.Mock).mockImplementation((selector: any) => selector(defaultStore))
   })
 
   it("renders nothing when closed", () => {
@@ -72,17 +72,17 @@ describe("ReviewChangesModal", () => {
 
   it("shows validation error when trying to confirm without resolution", () => {
     render(<ReviewChangesModal isOpen integration={mockIntegration} onClose={jest.fn()} />)
-    
+
     const confirmBtn = screen.getByRole("button", { name: /confirm & apply merge/i })
     fireEvent.click(confirmBtn)
-    
+
     expect(screen.getAllByText("Please select a resolution").length).toBeGreaterThan(0)
     expect(mockRecordResolution).not.toHaveBeenCalled()
   })
 
   it("successfully completes merge when all fields are resolved", () => {
     // Override store mock to simulate all resolved
-    ;(useIntegrationStore as unknown as jest.Mock).mockImplementation((selector: any) =>
+    ; (useIntegrationStore as unknown as jest.Mock).mockImplementation((selector: any) =>
       selector({
         ...defaultStore,
         resolutions: { "1": { email: "chg_1", name: "chg_2" } },
@@ -92,10 +92,10 @@ describe("ReviewChangesModal", () => {
 
     const onClose = jest.fn()
     render(<ReviewChangesModal isOpen integration={mockIntegration} onClose={onClose} />)
-    
+
     const confirmBtn = screen.getByRole("button", { name: /confirm & apply merge/i })
     fireEvent.click(confirmBtn)
-    
+
     expect(mockRecordResolution).toHaveBeenCalled()
     expect(mockClearResolutions).toHaveBeenCalledWith("1")
     expect(mockBumpIntegrationVersion).toHaveBeenCalledWith("1")
@@ -104,7 +104,7 @@ describe("ReviewChangesModal", () => {
   })
 
   it("skips history recording if all choices are local", () => {
-     ;(useIntegrationStore as unknown as jest.Mock).mockImplementation((selector: any) =>
+    ; (useIntegrationStore as unknown as jest.Mock).mockImplementation((selector: any) =>
       selector({
         ...defaultStore,
         resolutions: { "1": { email: "local", name: "local" } },
@@ -114,7 +114,7 @@ describe("ReviewChangesModal", () => {
     render(<ReviewChangesModal isOpen integration={mockIntegration} onClose={jest.fn()} />)
     const confirmBtn = screen.getByRole("button", { name: /confirm & apply merge/i })
     fireEvent.click(confirmBtn)
-    
+
     expect(mockRecordResolution).not.toHaveBeenCalled()
     expect(mockSetIntegrationStatus).toHaveBeenCalledWith("1", "synced")
   })

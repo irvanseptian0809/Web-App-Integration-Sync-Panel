@@ -6,7 +6,7 @@ import { useState } from "react"
 import { Button } from "@/components/atoms/Button"
 import { Input } from "@/components/atoms/Input"
 import { ModalWrapper } from "@/components/molecules/ModalWrapper"
-import { useIntegrationStore } from "@/stores/integrationStore"
+import { useIntegrationStore } from "@/stores/integrations/integrationsStore"
 import { cn } from "@/utils/cn"
 
 import { RemoveConfirmModalProps } from "./interfaces"

@@ -5,7 +5,7 @@ import { useState } from "react"
 import { Button } from "@/components/atoms/Button"
 import { ModalWrapper } from "@/components/molecules/ModalWrapper"
 import { SyncPreviewPanel } from "@/components/organisms/SyncPreviewPanel"
-import { useIntegrationStore } from "@/stores/integrationStore"
+import { useIntegrationStore } from "@/stores/integrations/integrationsStore"
 
 import { ReviewChangesModalProps } from "./interfaces"
 

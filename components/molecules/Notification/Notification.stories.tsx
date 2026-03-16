@@ -35,18 +35,18 @@ function NotificationDemo({
   message: string
   code?: string
 }) {
-  const { showNotification, isOpen } = useNotificationStore()
-  
+  const { showNotification, isOpen } = useNotificationsStore()
+
   React.useEffect(() => {
     showNotification({ type, title, message, code })
   }, [type, title, message, code, showNotification])
 
   if (!isOpen) return <div className="p-8 text-slate-400 italic">Waiting for notification state...</div>
-  
+
   return <Notification />
 }
 
-import { useNotificationStore } from "@/stores/notificationStore"
+import { useNotificationsStore } from "@/stores/notifications/notificationsStore"
 
 import React from "react"
 

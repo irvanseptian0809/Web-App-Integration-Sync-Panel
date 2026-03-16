@@ -11,7 +11,7 @@ import { ModalWrapper } from "@/components/molecules/ModalWrapper"
 import { EntityDeleteModal } from "@/components/organisms/EntityDeleteModal/EntityDeleteModal"
 import { DoorForm } from "@/components/organisms/DoorForm/DoorForm"
 import { DoorsTable } from "@/components/organisms/DoorsTable/DoorsTable"
-import { useDoorStore } from "@/stores/doorStore"
+import { useDoorStore } from "@/stores/doors/doorsStore"
 import { Door } from "@/interface/types"
 
 export default function DoorsPage() {
@@ -95,10 +95,10 @@ export default function DoorsPage() {
         </div>
       </div>
 
-      <DoorsTable 
-        doors={filteredDoors} 
-        onEdit={setEditingDoor} 
-        onDelete={setDeletingDoorId} 
+      <DoorsTable
+        doors={filteredDoors}
+        onEdit={setEditingDoor}
+        onDelete={setDeletingDoorId}
       />
 
       {/* Add Door Modal */}
@@ -119,10 +119,10 @@ export default function DoorsPage() {
         description="Update door details and status."
       >
         {editingDoor && (
-          <DoorForm 
-            initialData={editingDoor} 
-            onSubmit={handleUpdateDoor} 
-            onCancel={() => setEditingDoor(null)} 
+          <DoorForm
+            initialData={editingDoor}
+            onSubmit={handleUpdateDoor}
+            onCancel={() => setEditingDoor(null)}
           />
         )}
       </ModalWrapper>

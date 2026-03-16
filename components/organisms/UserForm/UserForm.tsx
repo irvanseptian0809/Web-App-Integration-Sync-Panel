@@ -34,8 +34,9 @@ export function UserForm({ initialData, onSubmit, onCancel, isSubmitting }: User
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
+          <label htmlFor="user-name" className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
           <Input
+            id="user-name"
             name="name"
             value={formData.name}
             onChange={handleChange}
@@ -44,8 +45,9 @@ export function UserForm({ initialData, onSubmit, onCancel, isSubmitting }: User
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+          <label htmlFor="user-email" className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
           <Input
+            id="user-email"
             type="email"
             name="email"
             value={formData.email}
@@ -55,8 +57,9 @@ export function UserForm({ initialData, onSubmit, onCancel, isSubmitting }: User
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Phone Number</label>
+          <label htmlFor="user-phone" className="block text-sm font-medium text-slate-700 mb-1">Phone Number</label>
           <Input
+            id="user-phone"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
@@ -64,8 +67,9 @@ export function UserForm({ initialData, onSubmit, onCancel, isSubmitting }: User
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Role</label>
+          <label htmlFor="user-role" className="block text-sm font-medium text-slate-700 mb-1">Role</label>
           <Input
+            id="user-role"
             name="role"
             value={formData.role}
             onChange={handleChange}
@@ -74,8 +78,9 @@ export function UserForm({ initialData, onSubmit, onCancel, isSubmitting }: User
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>
+          <label htmlFor="user-status" className="block text-sm font-medium text-slate-700 mb-1">Status</label>
           <select
+            id="user-status"
             name="status"
             value={formData.status}
             onChange={handleChange}

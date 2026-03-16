@@ -16,8 +16,8 @@ import { ResolutionHistoryTable } from "@/components/organisms/ResolutionHistory
 import { ReviewChangesModal } from "@/components/organisms/ReviewChangesModal"
 import { SyncDetailTemplate } from "@/components/templates/SyncDetailTemplate"
 import { syncApi } from "@/services/syncApi"
-import { useIntegrationStore } from "@/stores/integrationStore"
-import { useNotificationStore } from "@/stores/notificationStore"
+import { useIntegrationStore } from "@/stores/integrations/integrationsStore"
+import { useNotificationsStore } from "@/stores/notifications/notificationsStore"
 
 export default function IntegrationDetailPage() {
   const router = useRouter()
@@ -35,7 +35,7 @@ export default function IntegrationDetailPage() {
   const setPendingChanges = useIntegrationStore((state) => state.setPendingChanges)
   const setIntegrationStatus = useIntegrationStore((state) => state.setIntegrationStatus)
 
-  const showNotification = useNotificationStore((state) => state.showNotification)
+  const showNotification = useNotificationsStore((state) => state.showNotification)
 
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false)
   const [isReviewOpen, setIsReviewOpen] = useState(false)

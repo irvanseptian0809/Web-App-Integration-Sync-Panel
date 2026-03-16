@@ -8,7 +8,7 @@ import { TypographyH2, TypographyP } from "@/components/atoms/Typography"
 import { DashboardLayout } from "@/components/layouts/DashboardLayout"
 import { AddIntegrationModal } from "@/components/organisms/AddIntegrationModal"
 import { IntegrationsTable } from "@/components/organisms/IntegrationsTable"
-import { useIntegrationStore } from "@/stores/integrationStore"
+import { useIntegrationStore } from "@/stores/integrations/integrationsStore"
 
 export default function Home() {
   const integrations = useIntegrationStore((state) => state.integrations)

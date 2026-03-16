@@ -69,7 +69,7 @@ function ReviewModalDemo({
   )
 }
 
-import { useIntegrationStore } from "@/stores/integrationStore"
+import { useIntegrationStore } from "@/stores/integrations/integrationsStore"
 import React from "react"
 
 const mockIntegration = {

@@ -10,7 +10,7 @@ const mockSetIntegrationStatus = jest.fn()
 const mockSetPendingChanges = jest.fn()
 const mockShowNotification = jest.fn()
 
-jest.mock("@/stores/integrationStore", () => ({
+jest.mock("@/stores/integrations/integrationsStore", () => ({
   useIntegrationStore: (selector: any) =>
     selector({
       pendingChanges: {},
@@ -19,8 +19,8 @@ jest.mock("@/stores/integrationStore", () => ({
     }),
 }))
 
-jest.mock("@/stores/notificationStore", () => ({
-  useNotificationStore: (selector: any) =>
+jest.mock("@/stores/notifications/notificationsStore", () => ({
+  useNotificationsStore: (selector: any) =>
     selector({ showNotification: mockShowNotification }),
 }))
 
@@ -74,7 +74,7 @@ describe("IntegrationsTable", () => {
     render(<IntegrationsTable integrations={mockIntegrations} />, { wrapper })
     const syncButtons = screen.getAllByRole("button", { name: /sync/i })
     fireEvent.click(syncButtons[0])
-    
+
     expect(mockSetIntegrationStatus).toHaveBeenCalledWith("1", "syncing")
     await waitFor(() => {
       expect(mockFetchSyncData).toHaveBeenCalledWith("salesforce")
@@ -84,10 +84,10 @@ describe("IntegrationsTable", () => {
   it("handles sync error correctly", async () => {
     mockFetchSyncData.mockRejectedValueOnce(new Error("Network Error"))
     render(<IntegrationsTable integrations={mockIntegrations} />, { wrapper })
-    
+
     const syncButtons = screen.getAllByRole("button", { name: /sync/i })
     fireEvent.click(syncButtons[0])
-    
+
     await waitFor(() => {
       expect(mockSetIntegrationStatus).toHaveBeenCalledWith("1", "error")
       expect(mockShowNotification).toHaveBeenCalledWith(expect.objectContaining({ type: "error" }))
@@ -96,14 +96,14 @@ describe("IntegrationsTable", () => {
 
   it("handles bulk sync for selected items", async () => {
     render(<IntegrationsTable integrations={mockIntegrations} />, { wrapper })
-    
+
     const checkboxes = screen.getAllByRole("checkbox")
     // Select Salesforce (index 1)
     fireEvent.click(checkboxes[1])
-    
+
     const bulkSyncBtn = screen.getByRole("button", { name: /sync 1 selected/i })
     fireEvent.click(bulkSyncBtn)
-    
+
     await waitFor(() => {
       expect(mockFetchSyncData).toHaveBeenCalledWith("salesforce")
     })
@@ -111,11 +111,11 @@ describe("IntegrationsTable", () => {
 
   it("handles select all and clear selection", () => {
     render(<IntegrationsTable integrations={mockIntegrations} />, { wrapper })
-    
+
     const selectAllBox = screen.getAllByRole("checkbox")[0]
     fireEvent.click(selectAllBox)
     expect(screen.getByText(/1 integration selected/i)).toBeInTheDocument() // Only 1 is syncable
-    
+
     const clearBtn = screen.getByRole("button", { name: /clear selection/i })
     fireEvent.click(clearBtn)
     expect(screen.queryByText(/integration selected/i)).not.toBeInTheDocument()

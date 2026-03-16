@@ -12,8 +12,8 @@ import { RemoveConfirmModal } from "@/components/organisms/RemoveConfirmModal"
 import { ReviewChangesModal } from "@/components/organisms/ReviewChangesModal"
 import { Integration } from "@/interface/types"
 import { syncApi } from "@/services/syncApi"
-import { useIntegrationStore } from "@/stores/integrationStore"
-import { useNotificationStore } from "@/stores/notificationStore"
+import { useIntegrationStore } from "@/stores/integrations/integrationsStore"
+import { useNotificationsStore } from "@/stores/notifications/notificationsStore"
 
 import { IntegrationsTableProps } from "./interfaces"
 
@@ -21,7 +21,7 @@ export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
   const pendingChangesMap = useIntegrationStore((state) => state.pendingChanges)
   const setPendingChanges = useIntegrationStore((state) => state.setPendingChanges)
   const setIntegrationStatus = useIntegrationStore((state) => state.setIntegrationStatus)
-  const showNotification = useNotificationStore((state) => state.showNotification)
+  const showNotification = useNotificationsStore((state) => state.showNotification)
 
   const [reviewModalOpenFor, setReviewModalOpenFor] = useState<Integration | null>(null)
   const [removeModalOpenFor, setRemoveModalOpenFor] = useState<Integration | null>(null)
@@ -184,9 +184,8 @@ export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
                 <tr
                   key={integration.id}
                   onClick={() => toggleRow(integration.id, isSyncable)}
-                  className={`transition-colors group ${isSyncable ? "cursor-pointer" : ""} ${
-                    isSelected ? "bg-blue-50/40 hover:bg-blue-50/60" : "hover:bg-slate-50/50"
-                  }`}
+                  className={`transition-colors group ${isSyncable ? "cursor-pointer" : ""} ${isSelected ? "bg-blue-50/40 hover:bg-blue-50/60" : "hover:bg-slate-50/50"
+                    }`}
                 >
                   {/* Row checkbox */}
                   <td className="pl-6 pr-2 py-4">
@@ -224,9 +223,9 @@ export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
                   <td className="px-6 py-4 text-slate-600">
                     {integration.lastSyncTime
                       ? new Date(integration.lastSyncTime).toLocaleString(undefined, {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        })
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      })
                       : "Never"}
                   </td>
                   <td className="px-6 py-4 text-slate-600">v{integration.version}</td>
@@ -266,16 +265,16 @@ export function IntegrationsTable({ integrations }: IntegrationsTableProps) {
                       {/* Resolve Conflict Button */}
                       {(integration.status === "conflict" ||
                         pendingChangesMap[integration.id]?.length > 0) && (
-                        <Button
-                          variant="default"
-                          size="sm"
-                          className="bg-amber-500 hover:bg-amber-600 border-amber-500 text-white"
-                          onClick={() => setReviewModalOpenFor(integration)}
-                        >
-                          <AlertCircle className="w-4 h-4 mr-2" />
-                          Resolve Conflict
-                        </Button>
-                      )}
+                          <Button
+                            variant="default"
+                            size="sm"
+                            className="bg-amber-500 hover:bg-amber-600 border-amber-500 text-white"
+                            onClick={() => setReviewModalOpenFor(integration)}
+                          >
+                            <AlertCircle className="w-4 h-4 mr-2" />
+                            Resolve Conflict
+                          </Button>
+                        )}
 
                       {/* Manage button */}
                       <Link href={`/integrations/${integration.id}`}>

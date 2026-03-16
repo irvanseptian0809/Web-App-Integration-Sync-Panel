@@ -11,7 +11,7 @@ import { ModalWrapper } from "@/components/molecules/ModalWrapper"
 import { EntityDeleteModal } from "@/components/organisms/EntityDeleteModal/EntityDeleteModal"
 import { UserForm } from "@/components/organisms/UserForm/UserForm"
 import { UsersTable } from "@/components/organisms/UsersTable/UsersTable"
-import { useUserStore } from "@/stores/userStore"
+import { useUserStore } from "@/stores/users/usersStore"
 import { User } from "@/interface/types"
 
 export default function UsersPage() {
@@ -95,10 +95,10 @@ export default function UsersPage() {
         </div>
       </div>
 
-      <UsersTable 
-        users={filteredUsers} 
-        onEdit={setEditingUser} 
-        onDelete={setDeletingUserId} 
+      <UsersTable
+        users={filteredUsers}
+        onEdit={setEditingUser}
+        onDelete={setDeletingUserId}
       />
 
       {/* Add User Modal */}
@@ -119,10 +119,10 @@ export default function UsersPage() {
         description="Update user information and status."
       >
         {editingUser && (
-          <UserForm 
-            initialData={editingUser} 
-            onSubmit={handleUpdateUser} 
-            onCancel={() => setEditingUser(null)} 
+          <UserForm
+            initialData={editingUser}
+            onSubmit={handleUpdateUser}
+            onCancel={() => setEditingUser(null)}
           />
         )}
       </ModalWrapper>

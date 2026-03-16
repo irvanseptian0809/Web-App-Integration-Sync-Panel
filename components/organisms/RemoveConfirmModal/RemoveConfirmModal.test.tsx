@@ -7,7 +7,7 @@ import { Integration } from "@/interface/types"
 // ── Mocks ───────────────────────────────────────────────────────────────────
 const mockRemoveIntegration = jest.fn()
 
-jest.mock("@/stores/integrationStore", () => ({
+jest.mock("@/stores/integrations/integrationsStore", () => ({
   useIntegrationStore: (selector: any) =>
     selector({ removeIntegration: mockRemoveIntegration }),
 }))
@@ -68,7 +68,7 @@ describe("RemoveConfirmModal", () => {
     )
     const input = screen.getByPlaceholderText("salesforce")
     fireEvent.change(input, { target: { value: "salesforce" } })
-    
+
     const btn = screen.getByRole("button", { name: /yes, remove integration/i })
     expect(btn).not.toBeDisabled()
   })
@@ -82,20 +82,20 @@ describe("RemoveConfirmModal", () => {
         onSuccess={onSuccess}
       />,
     )
-    
+
     const input = screen.getByPlaceholderText("salesforce")
     fireEvent.change(input, { target: { value: "salesforce" } })
-    
+
     const btn = screen.getByRole("button", { name: /yes, remove integration/i })
     fireEvent.click(btn)
-    
+
     // Use getAllByText if it appears multiple times, or use a more specific selector
     expect(screen.getAllByText(/removing/i).length).toBeGreaterThan(0)
-    
+
     act(() => {
       jest.advanceTimersByTime(600)
     })
-    
+
     expect(mockRemoveIntegration).toHaveBeenCalledWith("1")
     expect(onSuccess).toHaveBeenCalled()
     expect(onClose).toHaveBeenCalled()
@@ -111,7 +111,7 @@ describe("RemoveConfirmModal", () => {
     )
     const input = screen.getByPlaceholderText("salesforce")
     fireEvent.change(input, { target: { value: "wrong" } })
-    
+
     expect(screen.getByText(/does not match/i)).toBeInTheDocument()
   })
 

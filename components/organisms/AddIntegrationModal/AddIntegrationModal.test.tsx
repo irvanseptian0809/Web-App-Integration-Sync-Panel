@@ -10,7 +10,7 @@ const mockAddIntegration = jest.fn()
 const mockShowNotification = jest.fn()
 const mockIntegrations: any[] = []
 
-jest.mock("@/stores/integrationStore", () => ({
+jest.mock("@/stores/integrations/integrationsStore", () => ({
   useIntegrationStore: (selector: any) =>
     selector({
       addIntegration: mockAddIntegration,
@@ -18,8 +18,8 @@ jest.mock("@/stores/integrationStore", () => ({
     }),
 }))
 
-jest.mock("@/stores/notificationStore", () => ({
-  useNotificationStore: (selector: any) =>
+jest.mock("@/stores/notifications/notificationsStore", () => ({
+  useNotificationsStore: (selector: any) =>
     selector({ showNotification: mockShowNotification }),
 }))
 
@@ -59,10 +59,10 @@ describe("AddIntegrationModal", () => {
   it("shows error when provider already exists", async () => {
     mockIntegrations.push({ provider: "salesforce" })
     render(<AddIntegrationModal isOpen onClose={jest.fn()} />, { wrapper })
-    
+
     // Select salesforce is default
     fireEvent.click(screen.getByRole("button", { name: /connect integration/i }))
-    
+
     await waitFor(() => {
       expect(screen.getByText(/already have a salesforce/i)).toBeInTheDocument()
     })
@@ -72,9 +72,9 @@ describe("AddIntegrationModal", () => {
     const { syncApi } = require("@/services/syncApi")
     const onClose = jest.fn()
     render(<AddIntegrationModal isOpen onClose={onClose} />, { wrapper })
-    
+
     fireEvent.click(screen.getByRole("button", { name: /connect integration/i }))
-    
+
     await waitFor(() => {
       expect(syncApi.fetchSyncData).toHaveBeenCalledWith("salesforce")
       expect(mockAddIntegration).toHaveBeenCalled()

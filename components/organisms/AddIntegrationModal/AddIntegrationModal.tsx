@@ -9,8 +9,8 @@ import { TypographyMuted } from "@/components/atoms/Typography"
 import { ModalWrapper } from "@/components/molecules/ModalWrapper"
 import { Integration } from "@/interface/types"
 import { syncApi } from "@/services/syncApi"
-import { useIntegrationStore } from "@/stores/integrationStore"
-import { useNotificationStore } from "@/stores/notificationStore"
+import { useIntegrationStore } from "@/stores/integrations/integrationsStore"
+import { useNotificationsStore } from "@/stores/notifications/notificationsStore"
 
 import { AddIntegrationModalProps } from "./interfaces"
 
@@ -22,7 +22,7 @@ export function AddIntegrationModal({ isOpen, onClose }: AddIntegrationModalProp
 
   const addIntegration = useIntegrationStore((state) => state.addIntegration)
   const integrations = useIntegrationStore((state) => state.integrations)
-  const showNotification = useNotificationStore((state) => state.showNotification)
+  const showNotification = useNotificationsStore((state) => state.showNotification)
 
   const { mutate: handleAdd, isPending } = useMutation({
     mutationFn: async () => {

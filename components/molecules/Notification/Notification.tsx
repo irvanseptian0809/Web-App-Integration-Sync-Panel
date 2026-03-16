@@ -3,13 +3,13 @@
 import { AlertTriangle, CheckCircle2, Info, X, XCircle } from "lucide-react"
 import React, { useEffect } from "react"
 
-import { useNotificationStore } from "@/stores/notificationStore"
+import { useNotificationsStore } from "@/stores/notifications/notificationsStore"
 import { cn } from "@/utils/cn"
 
 import { NotificationProps } from "./interfaces"
 
 export function Notification({ className }: NotificationProps) {
-  const { isOpen, type, title, message, code, hideNotification } = useNotificationStore()
+  const { isOpen, type, title, message, code, hideNotification } = useNotificationsStore()
 
   useEffect(() => {
     if (isOpen) {
